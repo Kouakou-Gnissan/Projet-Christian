@@ -58,10 +58,25 @@ body.dark-theme .carte-content {
   box-shadow: 1 10px 20px rgba(0, 0, 0, 0.1);
 }
 
+#map{
+  width:100%;
+  
+  position:relative;
+  z-index:1;
+}
+
+.leaflet-container{
+  touch-action: manipulation;
+}
+
+.leaflet-container{
+  touch-action: manipulation;
+}
+
 @media (max-width: 768px) {
   .carte-content {
     padding: 18px;
-    z-index: -1;
+    z-index: 1;
   }
 }
 
@@ -74,6 +89,7 @@ body.dark-theme .carte-content {
   width: 400px;
   left: 20%;
   z-index: 1000;
+
 }
 
 .search-wrapper {
@@ -170,15 +186,17 @@ body.dark-theme .carte-content {
 }
 
 /* Responsive */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .search-container {
-    top: 20px;
+    top: 10px;
     padding: 0 16px;
+    left: 0;
+    
   }
 
   .search-wrapper {
     left: 0;
-    margin-left: 30px;
+    margin-left: 15px;
   }
 
   .search-input {
@@ -189,6 +207,11 @@ body.dark-theme .carte-content {
   .search-icon {
     font-size: 20px;
     left: 16px;
+  }
+
+  .search-results {
+    margin-left: 30px;
+    max-width: 350px;
   }
 }
 
@@ -819,258 +842,6 @@ select.form-control:disabled {
 }
 
 /* ===========================================================================
-   MINI MODAL PROPRIÉTAIRE - Non-bloquant
-   ========================================================================== */
-
-.owner-mini-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3100;
-  pointer-events: none;
-}
-
-.owner-mini-modal.active {
-  display: block;
-}
-
-.owner-mini-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
-  width: 90%;
-  max-width: 400px;
-  background: var(--color-bg-sidebar);
-  border-radius: 24px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--color-border);
-  overflow: hidden;
-  pointer-events: auto;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.owner-mini-modal.active .owner-mini-content {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-/* En-tête mini-modal */
-.owner-mini-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
-  color: white;
-}
-
-.owner-mini-header .header-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.owner-mini-header .header-title span {
-  font-size: 1.5rem;
-}
-
-.owner-mini-header h4 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-/* Bouton fermeture mini-modal */
-.close-owner-modal {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.close-owner-modal:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
-}
-
-/* Corps mini-modal */
-.owner-mini-body {
-  padding: 24px;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.owner-full-details {
-  text-align: center;
-}
-
-.owner-full-avatar {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin: 0 auto 16px;
-}
-
-.owner-full-avatar span {
-  font-size: 48px;
-}
-
-.owner-full-details h3 {
-  font-size: 1.3rem;
-  color: var(--color-text-primary);
-  margin-bottom: 4px;
-}
-
-.owner-full-details p {
-  color: var(--color-text-description);
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-}
-
-/* Informations propriétaire */
-.owner-full-info {
-  text-align: left;
-  background: var(--color-bg-secondary);
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.owner-full-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.owner-full-row:last-child {
-  border-bottom: none;
-}
-
-.owner-full-row.full {
-  flex-direction: column;
-  gap: 4px;
-}
-
-.owner-full-row.full span:first-child {
-  color: var(--color-text-description);
-  font-size: 0.8rem;
-  margin-bottom: 2px;
-}
-
-.owner-full-row span:first-child {
-  color: var(--color-text-description);
-  font-size: 0.85rem;
-}
-
-.owner-full-row span:last-child {
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-
-/* Footer mini-modal */
-.owner-mini-footer {
-  display: flex;
-  gap: 10px;
-  padding: 16px 20px;
-  background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border);
-}
-
-/* Boutons mini-modal */
-.btn-contact, .btn-edit-owner {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-contact {
-  background: #10b981;
-  color: white;
-}
-
-.btn-contact:hover {
-  background: #059669;
-  transform: translateY(-2px);
-}
-
-.btn-edit-owner {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-}
-
-.btn-edit-owner:hover {
-  background: var(--color-hover-secondary);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* ===========================================================================
-   NOTIFICATION DE SUCCÈS
-   ========================================================================== */
-
-.save-success {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: #10b981;
-  color: white;
-  padding: 14px 28px;
-  border-radius: 50px;
-  box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  animation: slideInRight 0.3s ease;
-  z-index: 4000;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-}
-
-.save-success span:first-child {
-  font-size: 1.5rem;
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* ===========================================================================
    RESPONSIVE
    ========================================================================== */
 
@@ -1099,6 +870,8 @@ select.form-control:disabled {
 
 /* Mobile - passe en bas */
 @media (max-width: 768px) {
+
+  
   .side-modal-content {
     width: 100%;
     max-width: 100%;

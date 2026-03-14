@@ -13,6 +13,28 @@ const updateThemeIcon = () => {
     : "dark_mode";
 };
 
+//  gérer l'état initial de la sidebar
+const handleInitialSidebarState = () => {
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    sidebar.classList.add('collapsed'); // Sidebar rétractée sur mobile
+  } else {
+    sidebar.classList.remove('collapsed'); // Sidebar ouverte sur desktop
+  }
+  updateThemeIcon();
+};
+
+// Appelez cette fonction au chargement
+handleInitialSidebarState();
+
+// Ajoutez un écouteur pour le redimensionnement de la fenêtre
+window.addEventListener('resize', () => {
+  handleInitialSidebarState();
+});
+
+
+
 const savedTheme = localStorage.getItem("theme");
 const systemPrefersDark = window.matchMedia(
   "(prefers-color-scheme: dark)"
@@ -22,6 +44,8 @@ const shouldUseDarkTheme =
 
 document.body.classList.toggle("dark-theme", shouldUseDarkTheme);
 updateThemeIcon();
+
+
 
 //bouton de reduction de la sidebar
 sidebarToggleBtn.forEach((btn) => {

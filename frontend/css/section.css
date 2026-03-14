@@ -907,6 +907,12 @@ select.section-form-control {
 
 /* Responsive */
 @media (max-width: 768px) {
+
+  .section-modal {
+    height: 85%;
+    margin-top: 100px;
+  }
+
   .section-modal-content {
     width: 95%;
     margin: 20px;
