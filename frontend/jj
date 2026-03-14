@@ -1,0 +1,136 @@
+  <div class="parcelle-card">
+              <div class="card-header">
+                <div class="parcelle-badge">
+                  <span class="parcelle-code">A-01-001</span>
+                  <span class="parcelle-status status-active">Active</span>
+                </div>
+                <div class="card-menu">
+                  <button class="menu-dots">
+                    <span class="material-symbols-rounded">more_vert</span>
+                  </button>
+                  
+                </div>
+              </div>
+
+              <div class="card-preview">
+                <div class="preview-shape"></div>
+              </div>
+
+              <div class="card-info">
+                <div class="info-row">
+                  <span class="info-label">Surface</span>
+                  <span class="info-value">850 m²</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Section/Îlot</span>
+                  <span class="info-value">A / 01</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Localisation</span>
+                  <span class="info-value">Quartier Nord</span>
+                </div>
+              </div>
+
+              <!-- Module à 3 volets intégré à la carte -->
+              <div class="tabs-module">
+                <div class="tabs-header">
+                  <button class="tab-btn active" data-tab="parcelle">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span>Parcelle</span>
+                  </button>
+                  <button class="tab-btn" data-tab="proprietaire">
+                    <span class="material-symbols-rounded">person</span>
+                    <span>Propriétaire</span>
+                  </button>
+                  <button class="tab-btn" data-tab="bien">
+                    <span class="material-symbols-rounded"
+                      >account_balance</span
+                    >
+                    <span>Bien imposable</span>
+                  </button>
+                </div>
+
+                <div class="tabs-content">
+                  <!-- Volet Parcelle -->
+                  <div class="tab-pane active" id="tab-parcelle-1">
+                    <div class="info-detail">
+                      <div class="detail-item">
+                        <span class="detail-label">Numéro cadastral</span>
+                        <span class="detail-value">A-01-001</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">Surface cadastrale</span>
+                        <span class="detail-value">850 m²</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">Nature</span>
+                        <span class="detail-value">Terrain urbain</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-label">Date création</span>
+                        <span class="detail-value">12/03/2020</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Volet Propriétaire -->
+                  <div class="tab-pane" id="tab-proprietaire-1">
+                    <div class="proprietaire-info">
+                      <div class="proprietaire-avatar">
+                        <span class="material-symbols-rounded">person</span>
+                      </div>
+                      <div class="proprietaire-details">
+                        <h4>Koffi Jean-Baptiste</h4>
+                        <p>Né le 15/06/1975</p>
+                        <p>Abidjan, Cocody</p>
+                      </div>
+                    </div>
+                    <div class="contact-info">
+                      <div class="contact-item">
+                        <span class="material-symbols-rounded">call</span>
+                        <span>+225 07 89 45 12</span>
+                      </div>
+                      <div class="contact-item">
+                        <span class="material-symbols-rounded">mail</span>
+                        <span>jkoffi@email.com</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Volet Bien Imposable -->
+                  <div class="tab-pane" id="tab-bien-1">
+                    <div class="bien-header">
+                      <span class="bien-type">Bâti</span>
+                      <span class="bien-statut">Imposable</span>
+                    </div>
+                    <div class="bien-details">
+                      <div class="bien-row">
+                        <span>Valeur locative</span>
+                        <span class="bien-value">1 250 000 FCFA</span>
+                      </div>
+                      <div class="bien-row">
+                        <span>Taxe foncière</span>
+                        <span class="bien-value">75 000 FCFA</span>
+                      </div>
+                      <div class="bien-row">
+                        <span>Exercice</span>
+                        <span>2025</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <button class="btn-action" onclick="voirParcelle('A-01-001')">
+                  <span>Voir détails</span>
+                  <span class="material-symbols-rounded">arrow_forward</span>
+                </button>
+                <div class="footer-meta">
+                  <span class="meta-item">
+                    <span class="material-symbols-rounded">update</span>
+                    Il y a 2 jours
+                  </span>
+                </div>
+              </div>
+            </div>

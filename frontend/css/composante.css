@@ -1,0 +1,329 @@
+/* =========================
+   Bouton
+========================= */
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--color-gradient);
+  color: white;
+  box-shadow: 0 4px 12px rgba(92, 86, 225, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(92, 86, 225, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--color-hover-secondary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Mode nuit - ajustements supplémentaires */
+body.dark-theme .icon-btn.delete {
+  background: rgba(220, 38, 38, 0.6);
+}
+
+body.dark-theme .icon-btn.delete:hover {
+  background: #dc2626;
+}
+
+body.dark-theme .form-group input {
+  background: var(--color-bg-sidebar);
+}
+
+body.dark-theme .form-group input[readonly] {
+  background: var(--color-bg-secondary);
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =========================
+   Loader local (pas full screen)
+========================= */
+
+.section-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  gap: 15px;
+}
+
+/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   Apparition douce améliorée
+========================= */
+
+.fade-section {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  display: none;
+}
+
+.fade-section.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Optionnel : ajout d'un effet de delay pour les enfants */
+.fade-section > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+
+.fade-section.show > * {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s; /* tu peux augmenter pour un effet “staggered” */
+}
+
+/* ===========================================================================
+   NOTIFICATIONS - Style toast depuis le haut
+   ========================================================================== */
+
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  width: calc(100% - 40px);
+  pointer-events: none;
+}
+
+.notification {
+  background: var(--color-bg-sidebar);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transform: translateY(-120%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: auto;
+  border-left: 4px solid transparent;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Types de notifications */
+.notification.success {
+  border-left-color: #10b981;
+}
+
+.notification.success .notification-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.notification.error {
+  border-left-color: #ef4444;
+}
+
+.notification.error .notification-icon {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.notification.warning {
+  border-left-color: #f59e0b;
+}
+
+.notification.warning .notification-icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.notification.info {
+  border-left-color: var(--color-primary);
+}
+
+.notification.info .notification-icon {
+  background: var(--color-gradient);
+}
+
+/* Icône */
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.notification-icon span {
+  font-size: 24px;
+}
+
+/* Contenu */
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 0.9rem;
+  color: var(--color-text-description);
+  line-height: 1.4;
+}
+
+/* Bouton fermer */
+.notification-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-placeholder);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-close:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.notification-close span {
+  font-size: 20px;
+}
+
+/* Animation d'entrée */
+@keyframes slideFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Animation de sortie */
+@keyframes slideToTop {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.notification.removing {
+  animation: slideToTop 0.3s ease forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    width: auto;
+  }
+
+  .notification {
+    padding: 14px 16px;
+  }
+
+  .notification-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .notification-icon span {
+    font-size: 20px;
+  }
+
+  .notification-title {
+    font-size: 0.95rem;
+  }
+
+  .notification-message {
+    font-size: 0.85rem;
+  }
+}

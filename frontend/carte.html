@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/carte.css" />
+    <link rel="stylesheet" href="css/composante.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Ajouter pour la geolocalisation -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <!-- Ajouter une bar de recherche de position -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"
+    />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+      <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <div class="sidebar-content">
+          <form action="#" class="search-form">
+            <span class="material-symbols-rounded"> search</span>
+            <input type="search" placeholder="recherche..." required />
+          </form>
+
+          <!--menu list-->
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="menu-label">Tableau de bord</span>
+              </a>
+            </li>
+            <!-- Menu déroulant 1 : Publicité -->
+            <li class="menu-item dropdown">
+              <div class="menu-link dropdown-toggle">
+                <div class="menu-left">
+                  <span class="material-symbols-rounded">map</span>
+                  <span class="menu-label">Données cadas</span>
+                </div>
+                <span class="dropdown-arrow material-symbols-rounded"
+                  >chevron_right</span
+                >
+              </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <a href="section.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span class="dropdown-label">Sections</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="ilot.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span class="dropdown-label">Îlots</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="parcelle.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span class="dropdown-label">Parcelles</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Menu simple -->
+
+            <li class="menu-item">
+              <a href="carte.html" class="menu-link active">
+                <span class="material-symbols-rounded">public</span>
+                <span class="menu-label">Carte</span>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="statistiaque.html" class="menu-link">
+                <span class="material-symbols-rounded">analytics</span>
+                <span class="menu-label">Statistiques</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="main-container">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-card">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus nostrum
+          architecto illo sunt voluptatum impedit ad ab, deserunt perferendis
+          voluptatem! Magni perspiciatis esse debitis quae, velit at voluptas
+          magnam nam?
+        </p>
+
+        <!-- Block d'affichage de la carte -->
+        <div class="carte-content" id="map">
+          <div class="search-container">
+            <div class="search-wrapper">
+              <span class="material-symbols-rounded search-icon">search</span>
+
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Rechercher..."
+              />
+
+              <button class="search-clear" type="button">
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            </div>
+
+            <div class="search-results" id="searchResults"></div>
+          </div>
+          <!-- Bouton de géolocalisation -->
+          <div class="geolocation-btn">
+            <button id="locateMe" title="Me localiser">
+              <i class="fas fa-location-crosshairs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal latéral - Détails parcelle modifiable -->
+    <div id="parcelleSideModal" class="side-modal">
+      <div class="side-modal-content">
+        <!-- En-tête -->
+        <div class="side-modal-header">
+          <div class="header-title">
+            <span class="material-symbols-rounded">crop_square</span>
+            <h3 id="modalTitle">Détails de la parcelle</h3>
+          </div>
+          <div class="header-actions">
+            <button
+              class="mode-toggle"
+              id="toggleEditMode"
+              title="Mode édition"
+            >
+              <span class="material-symbols-rounded">edit</span>
+            </button>
+            <button class="close-modal" id="closeSideModal">
+              <span class="material-symbols-rounded">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Corps du modal avec champs -->
+        <div class="side-modal-body">
+          <form id="parcelleForm">
+            <!-- ID caché -->
+            <input type="hidden" id="id_parcelle" name="id_parcelle" />
+
+            <!-- SECTION 1 : IDENTIFICATION CADASTRALE -->
+            <div class="form-section">
+              <h4>Identification cadastrale</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Numéro parcelle <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    id="parcelle"
+                    name="parcelle"
+                    class="form-control"
+                    readonly
+                    placeholder="Ex: A-01-001"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Section parcelle</label>
+                  <input
+                    type="text"
+                    id="section_parcelle"
+                    name="section_parcelle"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Section</label>
+                  <select
+                    id="section"
+                    name="section"
+                    class="form-control"
+                    disabled
+                  >
+                    <option value="">Chargement...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Îlot</label>
+                  <input
+                    type="text"
+                    id="ilot"
+                    name="ilot"
+                    class="form-control"
+                    readonly
+                    placeholder="Ex: 01"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Lot</label>
+                  <input
+                    type="text"
+                    id="lot"
+                    name="lot"
+                    class="form-control"
+                    readonly
+                    placeholder="Ex: 001"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Titre foncier</label>
+                  <input
+                    type="text"
+                    id="titre_foncier"
+                    name="titre_foncier"
+                    class="form-control"
+                    readonly
+                    placeholder="N° titre foncier"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2 : CARACTÉRISTIQUES PHYSIQUES -->
+            <div class="form-section">
+              <h4>Caractéristiques physiques</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Superficie (m²) <span class="required">*</span></label>
+                  <input
+                    type="number"
+                    id="superficie"
+                    name="superficie"
+                    class="form-control"
+                    readonly
+                    step="0.01"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Couche (layer)</label>
+                  <input
+                    type="text"
+                    id="layer"
+                    name="layer"
+                    class="form-control"
+                    readonly
+                    placeholder="Couche cartographique"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Géométrie</label>
+                  <div class="input-with-button">
+                    <input
+                      type="text"
+                      id="geom"
+                      name="geom"
+                      class="form-control"
+                      readonly
+                      placeholder="Coordonnées géométriques"
+                    />
+                    <button
+                      type="button"
+                      class="field-action-btn"
+                      id="viewGeomBtn"
+                      title="Voir sur la carte"
+                    >
+                      <span class="material-symbols-rounded">map</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3 : LOCALISATION -->
+            <div class="form-section">
+              <h4>Localisation</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Commune</label>
+                  <input
+                    type="text"
+                    id="Commune"
+                    name="Commune"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Localité</label>
+                  <input
+                    type="text"
+                    id="localite"
+                    name="localite"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Quartier</label>
+                  <input
+                    type="text"
+                    id="quartier"
+                    name="quartier"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Circonscription foncière</label>
+                  <input
+                    type="text"
+                    id="circonscription_fonciere"
+                    name="circonscription_fonciere"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4 : STATUT ET PROPRIÉTÉ -->
+            <div class="form-section">
+              <h4>Statut et propriété</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Statut cadastral</label>
+                  <input
+                    type="text"
+                    name="satus_cadastrale"
+                    class="form-control"
+                    id="satus_cadastrale"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Propriétaire</label>
+                  <div class="input-with-button">
+                    <input
+                      type="text"
+                      id="proprietaire"
+                      name="proprietaire"
+                      class="form-control"
+                      readonly
+                      placeholder="Nom du propriétaire"
+                    />
+                    <button
+                      type="button"
+                      class="field-action-btn"
+                      id="viewOwnerFromParcelleBtn"
+                      title="Voir détails propriétaire"
+                    >
+                      <span class="material-symbols-rounded">visibility</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 5 : INFORMATIONS FISCALES -->
+            <div class="form-section">
+              <h4>Informations fiscales</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Année d'acquisition</label>
+                  <input
+                    type="number"
+                    id="annee_aquisition"
+                    name="annee_aquisition"
+                    class="form-control"
+                    readonly
+                    min="1900"
+                    max="2100"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Année de déclaration</label>
+                  <input
+                    type="number"
+                    id="annee_declaration"
+                    name="annee_declaration"
+                    class="form-control"
+                    readonly
+                    min="1900"
+                    max="2100"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Numéro de déclaration</label>
+                  <input
+                    type="text"
+                    id="numero_declaration"
+                    name="numero_declaration"
+                    class="form-control"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Valeur marchande (non bâti)</label>
+                  <input
+                    type="number"
+                    id="valeur_marchande"
+                    name="valeur_marchande"
+                    class="form-control"
+                    readonly
+                    step="1000"
+                    placeholder="FCFA"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Propriété bâtie</label>
+                  <select
+                    id="proprité_batie"
+                    name="proprité_batie"
+                    class="form-control"
+                    disabled
+                  >
+                    <option value="">Sélectionner</option>
+                    <option value="oui">Oui</option>
+                    <option value="non">Non</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pied du modal -->
+        <div class="side-modal-footer">
+          <div class="footer-left">
+            <button class="btn-cancel" id="cancelEditBtn" style="display: none">
+              <span class="material-symbols-rounded">close</span>
+              Annuler
+            </button>
+          </div>
+          <div class="footer-right">
+            <button class="btn-save" id="saveParcelleBtn" style="display: none">
+              <span class="material-symbols-rounded">save</span>
+              Enregistrer
+            </button>
+            <button class="btn-print" id="printParcelleBtn">
+              <span class="material-symbols-rounded">print</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini modal propriétaire (réutilisé) -->
+    <div id="ownerDetailModal" class="owner-mini-modal">
+      <!-- ... (garder le même que précédemment) ... -->
+    </div>
+
+    <!-- Conteneur des notifications -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="js/composante.js"></script>
+    <!-- Ajouter pour suparbase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <!-- Ajouter pour la géolalisattion -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+
+    <!-- Délimitation de la carte ivoirienne -->
+    <script src="https://unpkg.com/leaflet-boundary-canvas@1.0.0/dist/leaflet-boundary-canvas.min.js"></script>
+
+    <script>
+      // initialisation de la carte
+      var map = L.map("map").setView([7.55, -5.55], 12);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 22,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 2. CHARGER ET AFFICHER LA FRONTIÈRE DU PAYS
+      fetch("js/data/civ.geojson") // <-- Chemin vers votre nouveau fichier ADM0
+        .then((response) => response.json())
+        .then(function (countryBorder) {
+          // Créer une couche GeoJSON stylisée
+
+          map.createPane("maCarte");
+          map.getPane("maCarte").style.zIndex = 200;
+
+          var borderLayer = L.geoJSON(countryBorder, {
+            pane: "maCarte",
+            style: {
+              fillColor: "#3388ff", // Couleur de remplissage (bleu)
+              color: "#003366", // Couleur de la bordure (bleu foncé)
+              weight: 0.5, // Épaisseur du trait de bordure
+              opacity: 0.7, // Opacité du trait
+              fillOpacity: 0.15, // Légère transparence pour l'intérieur
+            },
+          }).addTo(map);
+
+          // 3. (Optionnel mais recommandé) Ajuster la vue pour bien cadrer le pays
+          map.fitBounds(borderLayer.getBounds(), {
+            padding: [10, 10], // Ajoute une marge de 30px autour
+            maxZoom: 14, // Empêche un zoom trop rapproché
+          });
+        })
+        .catch(function (error) {
+          console.error("Erreur de chargement de la frontière :", error);
+          // Vous pouvez afficher un message à l'utilisateur si besoin
+        });
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== Configuration du contrôle de localisation ========================
+
+      // sauvegarder le position initial
+      var savedView = {
+        center: map.getCenter(), // Centre actuel
+        zoom: map.getZoom(), // Zoom actuel
+      };
+      console.log(savedView.zoom);
+
+      var locateControl = L.control
+        .locate({
+          position: "bottomright",
+          strings: {
+            title: "Me localiser",
+            popup: "Vous êtes à {distance} {unit} de ce point",
+            outsideMapBoundsMsg:
+              "Vous semblez être en dehors des limites de la carte",
+          },
+          locateOptions: {
+            maxZoom: 16,
+            watch: true,
+            enableHighAccuracy: true,
+          },
+          icon: "fas fa-location-crosshairs",
+          iconLoading: "fas fa-spinner fa-spin",
+          circleStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+            fillOpacity: 0.15,
+          },
+          markerStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+          },
+
+          // Options pour le retour
+          keepCurrentZoomLevel: false,
+          returnToPrevBounds: true, // Revenir à la vue précédente
+          flyTo: true, // Animation fluide
+          cacheLocation: true,
+
+          // Comportement au clic
+          clickBehavior: {
+            inView: "stop", // Si déjà dans la vue : s'arrête
+            outOfView: "setView", // Si hors vue : centre
+            inViewNotFollowing: "setView",
+          },
+        })
+        .addTo(map);
+
+      //========================= Événement quand on arrête la localisation===================
+      map.on("stopfollowing", function () {
+        // Revenir à la vue sauvegardée
+        map.flyTo(savedView.center, savedView.zoom, {
+          duration: 1, // Durée de l'animation en secondes
+        });
+        console.log("Retour à la position initiale");
+      });
+    </script>
+
+    <script src="js/carte.js" type="module"></script>
+  </body>
+</html>

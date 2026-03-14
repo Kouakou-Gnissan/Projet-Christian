@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/ilot.css" />
+    <link rel="stylesheet" href="css/composante.css" />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+       <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <div class="sidebar-content">
+          <form action="#" class="search-form">
+            <span class="material-symbols-rounded"> search</span>
+            <input type="search" placeholder="recherche..." required />
+          </form>
+
+          <!--menu list-->
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="menu-label">Tableau de bord</span>
+              </a>
+            </li>
+            <!-- Menu déroulant 1 : Publicité -->
+            <li class="menu-item dropdown">
+              <div class="menu-link dropdown-toggle active">
+                <div class="menu-left">
+                  <span class="material-symbols-rounded">map</span>
+                  <span class="menu-label">Données cadas</span>
+                </div>
+                <span class="dropdown-arrow material-symbols-rounded"
+                  >chevron_right</span
+                >
+              </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <a href="section.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span class="dropdown-label">Sections</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="ilot.html" class="dropdown-link active">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span class="dropdown-label">Îlots</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="parcelle.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span class="dropdown-label">Parcelles</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Menu simple -->
+
+            <li class="menu-item">
+              <a href="carte.html" class="menu-link">
+                <span class="material-symbols-rounded">public</span>
+                <span class="menu-label">Carte</span>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="statistiaque.html" class="menu-link">
+                <span class="material-symbols-rounded">analytics</span>
+                <span class="menu-label">Statistiques</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+
+      <div class="main-container">
+        <!-- En-tête avec titre et description -->
+        <div class="page-header">
+          <div class="header-text">
+            <h1 class="page-title">Gestion des îlots</h1>
+            <p class="page-description">
+              Les îlots regroupent un ensemble de parcelles contiguës. Ils
+              constituent l'unité intermédiaire entre les sections et les
+              parcelles dans le découpage cadastral.
+            </p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary btn-with-icon" id="btnAddIlot">
+              <span class="material-symbols-rounded">add</span>
+              <span>Nouvel îlot</span>
+            </button>
+            <button class="btn btn-outline btn-with-icon" id="btnImportIlots">
+              <span class="material-symbols-rounded">upload_file</span>
+              <span>Importer</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barre de recherche et vue -->
+        <div class="search-section">
+          <div class="search-wrapper">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Rechercher un îlot (numéro, section, superficie...)"
+              id="searchIlot"
+            />
+          </div>
+        </div>
+        <div id="donneeLoader" class="section-loader">
+          <div class="spinner"></div>
+          <p>Chargement des données...</p>
+        </div>
+        <div id="donneeContent" class="fade-section">
+          <!-- Statistiques -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">layers</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalSections">0</span>
+                <span class="stat-label">Sections</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">grid_view</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalIlots">0</span>
+                <span class="stat-label">Îlots</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">crop_square</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalParcelles">0</span>
+                <span class="stat-label">Parcelles</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">person</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalPropietaire">0</span>
+                <span class="stat-label">Propriétaire</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grille des îlots -->
+          <div class="ilots-grid" id="ilotGrid">
+            <!-- Carte îlot 2 
+          <div class="ilot-card">
+            <div class="card-header">
+              <div class="ilot-number">
+                <span class="number-badge">Îlot A-02</span>
+                <span class="section-indicator">Section A</span>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier l'îlot">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer l'îlot">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="ilot-main-info">
+                <div class="info-group">
+                  <div class="info-label">Superficie totale</div>
+                  <div class="info-value">8,3 ha</div>
+                </div>
+                <div class="info-group">
+                  <div class="info-label">Nombre de parcelles</div>
+                  <div class="info-value">18</div>
+                </div>
+                <div class="info-group">
+                  <div class="info-label">Localisation</div>
+                  <div class="info-value">Quartier Est</div>
+                </div>
+                <div class="info-group">
+                  <div class="info-label">Date création</div>
+                  <div class="info-value">2023</div>
+                </div>
+              </div>
+
+              <div class="ilot-stats">
+                <div class="stat-badge">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>18 parcelles</span>
+                </div>
+                <div class="stat-badge">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>8,3 ha</span>
+                </div>
+                <div class="stat-badge">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Est</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="footer-left">
+                <span class="material-symbols-rounded">schedule</span>
+                <span>Mis à jour: 14 mars 2025</span>
+              </div>
+              <button class="voir-parcelles">
+                Voir le détail
+                <span class="material-symbols-rounded">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+          --></div>
+
+          <!-- Message quand aucun îlot n'est trouvé -->
+          <div class="empty-message" id="emptyMessage">
+            <span class="material-symbols-rounded empty-icon">grid_off</span>
+            <p class="empty-title">Aucun îlot</p>
+            <p class="empty-subtitle">Aucun îlot trouvé à afficher</p>
+          </div>
+
+          <!-- Pagination -->
+
+          <div class="pagination">
+            <button class="pagination-arrow" id="prevBtn">
+              <span class="material-symbols-rounded">chevron_left</span>
+            </button>
+
+            <div class="pagination-numbers"></div>
+
+            <button class="pagination-arrow" id="nextBtn">
+              <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module de détail de parcelle -->
+    <div id="ilotModal" class="modal">
+      <div class="modal-content">
+        <!-- En-tête avec titre et boutons -->
+        <div class="modal-header">
+          <h3>Détails de l'îlot</h3>
+          <div class="header-buttons">
+            <button id="btnEdit" class="icon-btn" title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button id="btnDelete" class="icon-btn delete" title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button id="btnClose" class="icon-btn close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Corps du module avec les champs -->
+        <div class="modal-body">
+          <form id="ilotForm">
+            <div class="form-group">
+              <label>Numéro de lot</label>
+              <input type="text" name="numero_ilot" readonly />
+            </div>
+            <div class="form-group">
+              <label>Section</label>
+              <input type="text" name="section" readonly />
+            </div>
+            <div class="form-group">
+              <label>Saif</label>
+              <input type="text" name="saif" readonly />
+            </div>
+            <div class="form-group">
+              <label>Lotissement</label>
+              <input type="text" name="nom_lotissement" readonly />
+            </div>
+            <div class="form-group">
+              <label>Ville/Commune</label>
+              <input type="text" name="ville_commune" readonly />
+            </div>
+            <!-- Ajoutez d'autres champs selon vos besoins -->
+          </form>
+        </div>
+
+        <!-- Pied du module avec boutons d'action -->
+        <div class="modal-footer">
+          <button id="btnCancel" class="btn btn-secondary">Annuler</button>
+          <button id="btnSave" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteneur des notifications -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Ajouter pour suparbase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/composante.js"></script>
+    <script src="js/stat.js" type="module"></script>
+    <script src="js/ilot.js" type="module"></script>
+  </body>
+</html>

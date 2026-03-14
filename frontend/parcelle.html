@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/parcelle.css" />
+    <link rel="stylesheet" href="css/composante.css" />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+     <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <div class="sidebar-content">
+          <form action="#" class="search-form">
+            <span class="material-symbols-rounded"> search</span>
+            <input type="search" placeholder="recherche..." required />
+          </form>
+
+          <!--menu list-->
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="menu-label">Tableau de bord</span>
+              </a>
+            </li>
+            <!-- Menu déroulant 1 : Publicité -->
+            <li class="menu-item dropdown">
+              <div class="menu-link dropdown-toggle active">
+                <div class="menu-left">
+                  <span class="material-symbols-rounded">map</span>
+                  <span class="menu-label">Données cadas</span>
+                </div>
+                <span class="dropdown-arrow material-symbols-rounded"
+                  >chevron_right</span
+                >
+              </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <a href="section.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span class="dropdown-label">Sections</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="ilot.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span class="dropdown-label">Îlots</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="parcelle.html" class="dropdown-link active">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span class="dropdown-label">Parcelles</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Menu simple -->
+
+            <li class="menu-item">
+              <a href="carte.html" class="menu-link">
+                <span class="material-symbols-rounded">public</span>
+                <span class="menu-label">Carte</span>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="statistiaque.html" class="menu-link">
+                <span class="material-symbols-rounded">analytics</span>
+                <span class="menu-label">Statistiques</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+
+      <div class="main-container">
+        <!-- En-tête de page avec effet visuel -->
+        <div class="page-hero">
+          <div class="hero-content">
+            <h1 class="hero-title">Gestion des parcelles</h1>
+            <p class="hero-description">
+              Interface complète de gestion parcellaire. Visualisez, modifiez et
+              gérez l'ensemble des informations liées aux parcelles,
+              propriétaires et biens imposables.
+            </p>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="stat-number" id="totalParcelles">0</span>
+              <span class="stat-label">Parcelles</span>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-number" id="totalPropietaire">0</span>
+              <span class="stat-label">Propriétaires</span>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-number" id="totalBienImposable">0</span>
+              <span class="stat-label">Biens imposables</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre d'actions principales -->
+        <div class="action-bar">
+          <div class="search-wrapper">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Rechercher une parcelle (numéro, section, propriétaire...)"
+              id="searchParcelle"
+            />
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="addParcelleBtn">
+              <span class="material-symbols-rounded">add</span>
+              <span>Nouvelle parcelle</span>
+            </button>
+            <button class="btn btn-outline" id="exportBtn">
+              <span class="material-symbols-rounded">download</span>
+            </button>
+            <button class="btn btn-outline" id="filterBtn">
+              <span class="material-symbols-rounded">filter_list</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="donneeLoader" class="section-loader">
+          <div class="spinner"></div>
+          <p>Chargement des données...</p>
+        </div>
+
+        <div id="donneeContent" class="fade-section">
+          <!-- Grille des parcelles -->
+          <div class="parcelles-grid" id="parcellesGrid">
+            <!-- Carte parcelle générer dynamiquement -->
+          </div>
+
+          <!-- Message quand aucune parcelle n'est trouvée -->
+          <div class="empty-message" id="emptyMessage">
+            <span class="material-symbols-rounded empty-icon">grid_off</span>
+            <p class="empty-title">Aucune parcelle</p>
+            <p class="empty-subtitle">Aucune parcelle trouvée à afficher</p>
+          </div>
+
+          <!-- Pagination -->
+
+          <div class="pagination">
+            <button class="pagination-arrow" id="prevBtn">
+              <span class="material-symbols-rounded">chevron_left</span>
+            </button>
+
+            <div class="pagination-numbers"></div>
+
+            <button class="pagination-arrow" id="nextBtn">
+              <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de gestion parcellaire -->
+    <div id="parcelleModal" class="modal">
+      <div class="modal-content modal-large">
+        <!-- En-tête -->
+        <div class="modal-header">
+          <h3 id="modalTitle">Gestion de la parcelle</h3>
+          <div class="header-buttons">
+            <button id="btnCloseModal" class="icon-btn close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation par onglets -->
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="parcelle">
+            <span class="material-symbols-rounded">crop_square</span>
+            <span>Parcelle</span>
+          </button>
+          <button class="modal-tab" data-tab="proprietaire">
+            <span class="material-symbols-rounded">person</span>
+            <span>Propriétaire</span>
+          </button>
+          <button class="modal-tab" data-tab="bien">
+            <span class="material-symbols-rounded">account_balance</span>
+            <span>Bien imposable</span>
+          </button>
+        </div>
+
+        <!-- Corps du modal -->
+        <div class="modal-body">
+          <!-- Volet PARCELLE -->
+          <div class="tab-content active" id="tab-parcelle">
+            <form id="formParcelle">
+              <div class="form-section">
+                <h4>Identification cadastrale</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label
+                      >Numéro de parcelle <span class="required">*</span></label
+                    >
+                    <input
+                      type="text"
+                      name="numero_parcelle"
+                      id="numero_parcelle"
+                      placeholder="Ex: A-01-001"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Section</label>
+                    <select name="section" id="section">
+                      <option value="">Chargement...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Numéro d'îlot</label>
+                    <input
+                      type="text"
+                      name="ilot"
+                      id="ilot"
+                      placeholder="Ex: 01"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Numéro de lot</label>
+                    <input
+                      type="text"
+                      name="lot"
+                      id="lot"
+                      placeholder="Ex: 001"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h4>Caractéristiques</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label
+                      >Superficie (m²) <span class="required">*</span></label
+                    >
+                    <input
+                      type="number"
+                      name="superficie"
+                      id="superficie"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Parcelle</label>
+                    <input type="number" name="parcelle" id="parcelle" >
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Statut cadastrale</label>
+                    <input
+                      type="text"
+                      name="statut_cadastrale"
+                      id="statut_cadastrale"
+                      placeholder="Statut cadastrale"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date acquisition</label>
+                    <input
+                      type="date"
+                      name="date_acquisition"
+                      id="date_acquisition"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h4>Localisation</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Ville/Commune</label>
+                    <input
+                      type="text"
+                      name="ville"
+                      id="ville"
+                      placeholder="Ex: Abidjan"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Quartier</label>
+                    <input
+                      type="text"
+                      name="quartier"
+                      id="quartier"
+                      placeholder="Ex: Cocody"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>circonscription foncière</label>
+                    <input
+                      type="text"
+                      name="circonscription_fonciere"
+                      id="circonscription_fonciere"
+                      placeholder="circonscription foncière"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Volet PROPRIETAIRE -->
+          <div class="tab-content" id="tab-proprietaire">
+            <form id="formProprietaire">
+              <div class="form-section">
+                <h4>Type de propriétaire</h4>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input
+                      type="radio"
+                      name="type_proprietaire"
+                      value="physique"
+                      checked
+                    />
+                    Personne physique
+                  </label>
+                  <label class="radio-label">
+                    <input
+                      type="radio"
+                      name="type_proprietaire"
+                      value="morale"
+                    />
+                    Personne morale
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-section" id="section-physique">
+                <h4>Identité</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Nom <span class="required">*</span></label>
+                    <input
+                      type="text"
+                      name="nom"
+                      id="nom"
+                      placeholder="Nom de famille"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Prénom(s)</label>
+                    <input
+                      type="text"
+                      name="prenom"
+                      id="prenom"
+                      placeholder="Prénom(s)"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Date de naissance</label>
+                    <input
+                      type="date"
+                      name="date_naissance"
+                      id="date_naissance"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Lieu de naissance</label>
+                    <input
+                      type="text"
+                      name="lieu_naissance"
+                      id="lieu_naissance"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Nationalité</label>
+                    <input
+                      type="text"
+                      name="nationalite"
+                      id="nationalite"
+                      value="Ivoirienne"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>N° CNI/Passeport</label>
+                    <input
+                      type="text"
+                      name="piece_identite"
+                      id="piece_identite"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="form-section"
+                id="section-morale"
+                style="display: none"
+              >
+                <h4>Raison sociale</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Dénomination <span class="required">*</span></label>
+                    <input
+                      type="text"
+                      name="denomination"
+                      id="denomination"
+                      placeholder="Nom de la société"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Forme juridique</label>
+                    <select name="forme_juridique" id="forme_juridique">
+                      <option value="SA">SA</option>
+                      <option value="SARL">SARL</option>
+                      <option value="SAS">SAS</option>
+                      <option value="SCI">SCI</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>N° RCCM</label>
+                    <input type="text" name="rccm" id="rccm" />
+                  </div>
+                  <div class="form-group">
+                    <label>N° CC</label>
+                    <input type="text" name="cc" id="cc" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h4>Coordonnées</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Téléphone</label>
+                    <input
+                      type="tel"
+                      name="telephone"
+                      id="telephone"
+                      placeholder="+225 01 23 45 67"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="contact@email.com"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Adresse postale</label>
+                    <input
+                      type="text"
+                      name="adresse_postale"
+                      id="adresse_postale"
+                      placeholder="Adresse complète"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Volet BIEN IMPOSABLE -->
+          <div class="tab-content" id="tab-bien">
+            <form id="formBien">
+              <div class="form-section">
+                <h4>Caractéristiques fiscales</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Type de bien <span class="required">*</span></label>
+                    <select name="type_bien" id="type_bien" required>
+                      <option value="">Sélectionner</option>
+                      <option value="bati">Bâti (construction)</option>
+                      <option value="non_bati">Non bâti (terrain nu)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Statut fiscal</label>
+                    <select name="statut_fiscal" id="statut_fiscal">
+                      <option value="imposable">Imposable</option>
+                      <option value="exonere">Exonéré</option>
+                      <option value="non_imposable">Non imposable</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h4>Évaluation</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Valeur locative (FCFA)</label>
+                    <input
+                      type="number"
+                      name="valeur_locative"
+                      id="valeur_locative"
+                      step="1000"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Taxe foncière (FCFA)</label>
+                    <input
+                      type="number"
+                      name="taxe_fonciere"
+                      id="taxe_fonciere"
+                      step="1000"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Base imposable</label>
+                    <input
+                      type="number"
+                      name="base_imposable"
+                      id="base_imposable"
+                      step="1000"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Taux applicable (%)</label>
+                    <input
+                      type="number"
+                      name="taux"
+                      id="taux"
+                      step="0.1"
+                      value="15"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h4>Informations complémentaires</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Année de construction</label>
+                    <input
+                      type="number"
+                      name="annee_construction"
+                      id="annee_construction"
+                      min="1900"
+                      max="2100"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Nombre de pièces</label>
+                    <input
+                      type="number"
+                      name="nb_pieces"
+                      id="nb_pieces"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Référence cadastrale</label>
+                    <input
+                      type="text"
+                      name="ref_cadastrale"
+                      id="ref_cadastrale"
+                      placeholder="Lien avec la parcelle"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label>Observations</label>
+                    <textarea
+                      name="observations"
+                      id="observations"
+                      rows="3"
+                      placeholder="Notes complémentaires..."
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Pied du modal -->
+        <div class="modal-footer">
+          <button
+            id="btnPrevious"
+            class="btn btn-outline"
+            style="display: none"
+          >
+            <span class="material-symbols-rounded">chevron_left</span>
+            Précédent
+          </button>
+          <button id="btnNext" class="btn btn-primary">
+            Suivant
+            <span class="material-symbols-rounded">chevron_right</span>
+          </button>
+          <button id="btnSave" class="btn btn-primary" style="display: none">
+            <span class="material-symbols-rounded">save</span>
+            Enregistrer
+          </button>
+          <button id="btnCancel" class="btn btn-secondary">Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteneur des notifications -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Ajouter pour suparbase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/composante.js"></script>
+    <script src="js/stat.js" type="module"></script>
+    <script src="js/parcelle.js" type="module"></script>
+  </body>
+</html>

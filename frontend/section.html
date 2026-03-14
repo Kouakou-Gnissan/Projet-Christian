@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/section.css" />
+    <link rel="stylesheet" href="css/composante.css" />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+      <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <div class="sidebar-content">
+          <form action="#" class="search-form">
+            <span class="material-symbols-rounded"> search</span>
+            <input type="search" placeholder="recherche..." required />
+          </form>
+
+          <!--menu list-->
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="menu-label">Tableau de bord</span>
+              </a>
+            </li>
+            <!-- Menu déroulant  -->
+            <li class="menu-item dropdown">
+              <div class="menu-link dropdown-toggle active">
+                <div class="menu-left">
+                  <span class="material-symbols-rounded">map</span>
+                  <span class="menu-label">Données cadas</span>
+                </div>
+                <span class="dropdown-arrow material-symbols-rounded"
+                  >chevron_right</span
+                >
+              </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <a href="section.html" class="dropdown-link active">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span class="dropdown-label">Sections</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="ilot.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span class="dropdown-label">Îlots</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="parcelle.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span class="dropdown-label">Parcelles</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Menu simple -->
+
+            <li class="menu-item">
+              <a href="carte.html" class="menu-link">
+                <span class="material-symbols-rounded">public</span>
+                <span class="menu-label">Carte</span>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="statistiaque.html" class="menu-link">
+                <span class="material-symbols-rounded">analytics</span>
+                <span class="menu-label">Statistiques</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="main-container">
+        <!-- En-tête avec titre et description -->
+        <div class="page-header">
+          <div class="header-text">
+            <h1 class="page-title">Gestion des sections cadastrales</h1>
+            <p class="page-description">
+              Visualisez et gérez l'ensemble des sections cadastrales. Chaque
+              section représente une division territoriale majeure regroupant
+              plusieurs îlots et parcelles.
+            </p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary btn-with-icon" id="btnAddSection">
+              <span class="material-symbols-rounded">add</span>
+              <span>Ajouter une section</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barre de recherche et filtres -->
+        <div class="search-section">
+          <div class="search-wrapper">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Rechercher une section (code, nom, commune...)"
+              id="searchSection"
+            />
+          </div>
+        </div>
+
+        <div id="donneeLoader" class="section-loader">
+          <div class="spinner"></div>
+          <p>Chargement des données...</p>
+        </div>
+
+        <div id="donneeContent" class="fade-section">
+          <!-- Statistiques rapides -->
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">layers</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalSections">0</span>
+                <span class="stat-label">Sections totales</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">grid_view</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalIlots">0</span>
+                <span class="stat-label">Îlots</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">crop_square</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalParcelles">0</span>
+                <span class="stat-label">Parcelles</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <span class="material-symbols-rounded">person</span>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value" id="totalPropietaire">0</span>
+                <span class="stat-label">Propriétaires</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liste des sections en cartes -->
+          <div class="sections-grid" id="sectionsGrid">
+            <!-- Carte section 1 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge">A</span>
+                <h3>Section A</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Dakar</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>125 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>15 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>84 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 12 mars 2025</span>
+            </div>
+          </div>
+          -->
+
+            <!-- Carte section 2 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge" style="background: #e11d48">B</span>
+                <h3>Section B</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Pikine</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>98 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>12 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>67 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 10 mars 2025</span>
+            </div>
+          </div>
+          -->
+            <!-- Carte section 3 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge" style="background: #7c3aed">C</span>
+                <h3>Section C</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Rufisque</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>210 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>24 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>156 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 8 mars 2025</span>
+            </div>
+          </div>
+          -->
+            <!-- Carte section 4 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge" style="background: #059669">D</span>
+                <h3>Section D</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Guédiawaye</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>76 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>9 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>42 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 5 mars 2025</span>
+            </div>
+          </div>
+          -->
+            <!-- Carte section 5 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge" style="background: #b45309">E</span>
+                <h3>Section E</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Thiès</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>320 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>31 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>203 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 3 mars 2025</span>
+            </div>
+          </div>
+          -->
+            <!-- Carte section 6 
+          <div class="section-card">
+            <div class="card-header">
+              <div class="section-code">
+                <span class="code-badge" style="background: #0891b2">F</span>
+                <h3>Section F</h3>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn edit" title="Modifier la section">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="action-btn delete" title="Supprimer la section">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="section-info">
+                <div class="info-item">
+                  <span class="material-symbols-rounded">pin_drop</span>
+                  <span>Commune de Mbour</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">straighten</span>
+                  <span>185 hectares</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">grid_view</span>
+                  <span>18 îlots</span>
+                </div>
+                <div class="info-item">
+                  <span class="material-symbols-rounded">crop_square</span>
+                  <span>112 parcelles</span>
+                </div>
+              </div>
+              <div class="section-preview">
+                <div class="preview-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="preview-link">Voir sur la carte</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="update-info">Mise à jour: 1 mars 2025</span>
+            </div>
+          </div>
+          --></div>
+
+          <!-- Message quand aucun îlot n'est trouvé -->
+          <div class="empty-message" id="emptyMessage">
+            <span class="material-symbols-rounded empty-icon">grid_off</span>
+            <p class="empty-title">Aucune section</p>
+            <p class="empty-subtitle">Aucune section trouvée à afficher</p>
+          </div>
+
+          <!-- Pagination -->
+
+          <div class="pagination">
+            <button class="pagination-arrow" id="prevBtn">
+              <span class="material-symbols-rounded">chevron_left</span>
+            </button>
+
+            <div class="pagination-numbers"></div>
+
+            <button class="pagination-arrow" id="nextBtn">
+              <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal pour sections -->
+    <div id="sectionModal" class="section-modal">
+      <div class="section-modal-content">
+        <!-- En-tête -->
+        <div class="section-modal-header">
+          <div class="header-title">
+            <span class="material-symbols-rounded">layers</span>
+            <h3 id="sectionModalTitle">Ajouter une section</h3>
+          </div>
+          <button class="close-section-modal" id="closeSectionModal">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+
+        <!-- Corps du modal -->
+        <div class="section-modal-body">
+          <form id="sectionForm">
+            <!-- ID caché pour la modification -->
+            <input type="hidden" id="section_id" name="section_id" />
+
+            <!-- Section 1 : Identification -->
+            <div class="section-form-group">
+              <label for="Section"
+                >Section <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                id="Section"
+                name="Section"
+                class="section-form-control"
+                placeholder="Ex: A"
+                required
+              />
+              <small class="form-help">Lettre de la section (A, B, C...)</small>
+            </div>
+
+            <div class="section-form-group">
+              <label for="section_parcelle">Section parcelle</label>
+              <input
+                type="text"
+                id="section_parcelle"
+                name="section_parcelle"
+                class="section-form-control"
+                placeholder="Ex: A-01"
+              />
+            </div>
+
+            <!-- Section 2 : Découpage -->
+            <div class="section-form-row">
+              <div class="section-form-group">
+                <label for="ilot">Îlot</label>
+                <input
+                  type="text"
+                  id="ilot"
+                  name="ilot"
+                  class="section-form-control"
+                  placeholder="Ex: 01"
+                />
+              </div>
+              <div class="section-form-group">
+                <label for="lot">Lot</label>
+                <input
+                  type="text"
+                  id="lot"
+                  name="lot"
+                  class="section-form-control"
+                  placeholder="Ex: 001"
+                />
+              </div>
+            </div>
+
+            <div class="section-form-row">
+              <div class="section-form-group">
+                <label for="Parcelle">Parcelle</label>
+                <input
+                  type="text"
+                  id="Parcelle"
+                  name="Parcelle"
+                  class="section-form-control"
+                  placeholder="Ex: A-01-001"
+                />
+              </div>
+              <div class="section-form-group">
+                <label for="Saif">SAIF</label>
+                <input
+                  type="text"
+                  id="Saif"
+                  name="Saif"
+                  class="section-form-control"
+                  placeholder="Numéro SAIF"
+                />
+              </div>
+            </div>
+
+            <!-- Section 3 : Couche et Géométrie -->
+            <div class="section-form-group">
+              <label for="layer">Layer (couche)</label>
+              <input
+                type="text"
+                id="layer"
+                name="layer"
+                class="section-form-control"
+              />
+            </div>
+
+            <div class="section-form-group">
+              <label for="geom"
+                >Géométrie <span class="required">*</span></label
+              >
+              <div class="geom-input-group">
+                <input
+                  type="text"
+                  id="geom"
+                  name="geom"
+                  class="section-form-control"
+                  placeholder="Coordonnées géométriques"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="geom-action-btn"
+                  id="addGeomBtn"
+                  title="Ajouter la géométrie"
+                >
+                  <span class="material-symbols-rounded">draw</span>
+                  <span>Dessiner</span>
+                </button>
+              </div>
+              <small class="form-help"
+                >Dessinez la section sur la carte ou entrez les
+                coordonnées</small
+              >
+            </div>
+
+            <!-- Aperçu géométrie (optionnel) -->
+            <div id="geomPreview" class="geom-preview" style="display: none">
+              <div class="geom-preview-header">
+                <span>Aperçu de la géométrie</span>
+                <button type="button" class="geom-clear" id="clearGeomBtn">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+              <div class="geom-preview-content" id="geomPreviewContent">
+                <!-- Les coordonnées seront affichées ici -->
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pied du modal -->
+        <div class="section-modal-footer">
+          <button
+            type="button"
+            class="section-btn section-btn-secondary"
+            id="cancelSectionBtn"
+          >
+            Annuler
+          </button>
+          <button
+            type="button"
+            class="section-btn section-btn-primary"
+            id="saveSectionBtn"
+          >
+            <span class="material-symbols-rounded">save</span>
+            Enregistrer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="confirm-modal">
+      <div class="confirm-box">
+        <div class="confirm-icon">
+          <span class="material-symbols-rounded">warning</span>
+        </div>
+
+        <h3 id="confirmTitle">Confirmation</h3>
+        <p id="confirmMessage">
+          Êtes-vous sûr de vouloir supprimer cet élément ?
+        </p>
+
+        <div class="confirm-actions">
+          <button id="confirmCancel" class="confirm-btn cancel">Annuler</button>
+
+          <button id="confirmOk" class="confirm-btn delete" type="button">
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteneur des notifications -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Ajouter pour suparbase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/composante.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/stat.js" type="module"></script>
+    <script src="js/section.js" type="module"></script>
+  </body>
+</html>

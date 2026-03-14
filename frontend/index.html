@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/carte.css" />
+    <link rel="stylesheet" href="css/composante.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Ajouter pour la geolocalisation -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <!-- Ajouter une bar de recherche de position -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"
+    />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+      <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <div class="sidebar-content">
+          <form action="#" class="search-form">
+            <span class="material-symbols-rounded"> search</span>
+            <input type="search" placeholder="recherche..." required />
+          </form>
+
+          <!--menu list-->
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="menu-label">Tableau de bord</span>
+              </a>
+            </li>
+            <!-- Menu déroulant 1 : Publicité -->
+            <li class="menu-item dropdown">
+              <div class="menu-link dropdown-toggle">
+                <div class="menu-left">
+                  <span class="material-symbols-rounded">map</span>
+                  <span class="menu-label">Données cadas</span>
+                </div>
+                <span class="dropdown-arrow material-symbols-rounded"
+                  >chevron_right</span
+                >
+              </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <a href="section.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">layers</span>
+                    <span class="dropdown-label">Sections</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="ilot.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">grid_view</span>
+                    <span class="dropdown-label">Îlots</span>
+                  </a>
+                </li>
+                <li class="dropdown-item">
+                  <a href="parcelle.html" class="dropdown-link">
+                    <span class="material-symbols-rounded">crop_square</span>
+                    <span class="dropdown-label">Parcelles</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Menu simple -->
+
+            <li class="menu-item">
+              <a href="carte.html" class="menu-link active">
+                <span class="material-symbols-rounded">public</span>
+                <span class="menu-label">Carte</span>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="statistiaque.html" class="menu-link">
+                <span class="material-symbols-rounded">analytics</span>
+                <span class="menu-label">Statistiques</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="main-container">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-card">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus nostrum
+          architecto illo sunt voluptatum impedit ad ab, deserunt perferendis
+          voluptatem! Magni perspiciatis esse debitis quae, velit at voluptas
+          magnam nam?
+        </p>
+
+      
+      </div>
+    </div>
+
+
+  </body>
+</html>

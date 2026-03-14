@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- lien pour affichge des icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/generate-ad.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Ajouter pour la geolocalisation -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <!-- Ajouter une bar de recherche de position -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"
+    />
+  </head>
+  <body>
+    <nav class="site-nav">
+      <button class="sidebar-toggle">
+        <span class="material-symbols-rounded"> menu</span>
+      </button>
+    </nav>
+
+    <div class="container">
+      <aside class="sidebar">
+        <header class="sidebar-header">
+          <img src="assets/Image-test.png" alt="" class="header-logo" />
+          <button class="sidebar-toggle">
+            <span class="material-symbols-rounded"> chevron_left</span>
+          </button>
+        </header>
+
+        <aside class="sidebar">
+          <header class="sidebar-header">
+            <img src="assets/Image-test.png" alt="" class="header-logo" />
+            <button class="sidebar-toggle">
+              <span class="material-symbols-rounded"> chevron_left</span>
+            </button>
+          </header>
+
+          <div class="sidebar-content">
+            <form action="#" class="search-form">
+              <span class="material-symbols-rounded"> search</span>
+              <input
+                type="search"
+                placeholder="rechercher une parcelle..."
+                required
+              />
+            </form>
+
+            <!--menu list-->
+            <ul class="menu-list">
+              <!-- Menu DONNÉES CADASTRALES (regroupement logique) -->
+              <li class="menu-item dropdown">
+                <div class="menu-link dropdown-toggle">
+                  <div class="menu-left">
+                    <span class="material-symbols-rounded">map</span>
+                    <span class="menu-label">Données cadas</span>
+                  </div>
+                  <span class="dropdown-arrow material-symbols-rounded"
+                    >chevron_right</span
+                  >
+                </div>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item">
+                    <a href="section.html" class="dropdown-link">
+                      <span class="material-symbols-rounded">layers</span>
+                      <span class="dropdown-label">Sections</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">grid_view</span>
+                      <span class="dropdown-label">Îlots</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">crop_square</span>
+                      <span class="dropdown-label">Parcelles</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Menu PROPRIÉTÉS (gestion des propriétaires et biens) -->
+              <li class="menu-item dropdown">
+                <div class="menu-link dropdown-toggle">
+                  <div class="menu-left">
+                    <span class="material-symbols-rounded"
+                      >real_estate_agent</span
+                    >
+                    <span class="menu-label">Propriétés</span>
+                  </div>
+                  <span class="dropdown-arrow material-symbols-rounded"
+                    >chevron_right</span
+                  >
+                </div>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">group</span>
+                      <span class="dropdown-label">Propriétaires</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded"
+                        >account_balance</span
+                      >
+                      <span class="dropdown-label">Biens imposables</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Menu ACTIONS COURANTES -->
+              <li class="menu-item dropdown">
+                <div class="menu-link dropdown-toggle">
+                  <div class="menu-left">
+                    <span class="material-symbols-rounded">edit_note</span>
+                    <span class="menu-label">Gestion</span>
+                  </div>
+                  <span class="dropdown-arrow material-symbols-rounded"
+                    >chevron_right</span
+                  >
+                </div>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">add_box</span>
+                      <span class="dropdown-label">Ajouter</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">update</span>
+                      <span class="dropdown-label">Modifier</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#" class="dropdown-link">
+                      <span class="material-symbols-rounded">delete</span>
+                      <span class="dropdown-label">Supprimer</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Menu RAPPORTS -->
+              <li class="menu-item">
+                <a href="#" class="menu-link">
+                  <span class="material-symbols-rounded">assessment</span>
+                  <span class="menu-label">Rapports fiscaux</span>
+                </a>
+              </li>
+
+              <!-- Menu HISTORIQUE -->
+              <li class="menu-item">
+                <a href="#" class="menu-link">
+                  <span class="material-symbols-rounded">analytics</span>
+                  <span class="menu-label">Statistiques</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!--sidebar footer (inchangé)-->
+          <div class="sidebar-footer">
+            <button class="theme-toggle">
+              <div class="theme-label">
+                <span class="theme-icon material-symbols-rounded"
+                  >dark_mode</span
+                >
+                <span class="theme-text">Mode nuit</span>
+              </div>
+              <div class="theme-toggle-track">
+                <div class="theme-toggle-indicator"></div>
+              </div>
+            </button>
+
+            <ul class="menu-list">
+              <li class="menu-item">
+                <a href="#" class="menu-link">
+                  <span class="material-symbols-rounded">logout</span>
+                  <span class="menu-label">Déconnexion</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <!--sidebar footer-->
+        <div class="sidebar-footer">
+          <button class="theme-toggle">
+            <div class="theme-label">
+              <span class="theme-icon material-symbols-rounded">dark_mode</span>
+              <span class="theme-text">Mode nuit</span>
+            </div>
+
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-indicator"></div>
+            </div>
+          </button>
+
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="menu-label">Déconnexion</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="main-container">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-card">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus nostrum
+          architecto illo sunt voluptatum impedit ad ab, deserunt perferendis
+          voluptatem! Magni perspiciatis esse debitis quae, velit at voluptas
+          magnam nam?
+        </p>
+
+        <!-- Block d'affichage de la carte -->
+        <div class="carte-content" id="map">
+          <!-- Bouton de géolocalisation -->
+          <div class="geolocation-btn">
+            <button id="locateMe" title="Me localiser">
+              <i class="fas fa-location-crosshairs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module de détail de parcelle -->
+    <div id="parcelleModal" class="modal">
+      <div class="modal-content">
+        <!-- En-tête avec titre et boutons -->
+        <div class="modal-header">
+          <h3>Détails de la parcelle</h3>
+          <div class="header-buttons">
+            <button id="btnEdit" class="icon-btn" title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button id="btnDelete" class="icon-btn delete" title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button id="btnClose" class="icon-btn close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Corps du module avec les champs -->
+        <div class="modal-body">
+          <form id="parcelleForm">
+            <div class="form-group">
+              <label>Numéro de lot</label>
+              <input type="text" name="numero_lot" readonly />
+            </div>
+            <div class="form-group">
+              <label>Numéro d'ilot</label>
+              <input type="text" name="numero_ilot" readonly />
+            </div>
+            <div class="form-group">
+              <label>Superficie (m²)</label>
+              <input type="number" name="superficie" readonly />
+            </div>
+            <div class="form-group">
+              <label>Lotissement</label>
+              <input type="text" name="nom_lotissement" readonly />
+            </div>
+            <div class="form-group">
+              <label>Ville/Commune</label>
+              <input type="text" name="ville_commune" readonly />
+            </div>
+            <!-- Ajoutez d'autres champs selon vos besoins -->
+          </form>
+        </div>
+
+        <!-- Pied du module avec boutons d'action -->
+        <div class="modal-footer">
+          <button id="btnCancel" class="btn btn-secondary">Annuler</button>
+          <button id="btnSave" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ajouter pour suparbase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/generate-ad.js"></script>
+    <script src="js/data/parcelle_1.js"></script>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- Ajouter pour la géolalisattion -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+
+    <!-- Ajouter une bar de recherche de position -->
+    <script src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js"></script>
+
+    <!-- Délimitation de la carte ivoirienne -->
+    <script src="https://unpkg.com/leaflet-boundary-canvas@1.0.0/dist/leaflet-boundary-canvas.min.js"></script>
+
+    <script>
+      // initialisation de la carte
+      var map = L.map("map").setView([7.55, -5.55], 12);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 22,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 2. CHARGER ET AFFICHER LA FRONTIÈRE DU PAYS
+      fetch("js/data/civ.geojson") // <-- Chemin vers votre nouveau fichier ADM0
+        .then((response) => response.json())
+        .then(function (countryBorder) {
+          // Créer une couche GeoJSON stylisée
+
+          map.createPane("maCarte");
+          map.getPane("maCarte").style.zIndex = 200;
+
+          var borderLayer = L.geoJSON(countryBorder, {
+            pane: "maCarte",
+            style: {
+              fillColor: "#3388ff", // Couleur de remplissage (bleu)
+              color: "#003366", // Couleur de la bordure (bleu foncé)
+              weight: 0.5, // Épaisseur du trait de bordure
+              opacity: 0.7, // Opacité du trait
+              fillOpacity: 0.15, // Légère transparence pour l'intérieur
+            },
+          }).addTo(map);
+
+          // 3. (Optionnel mais recommandé) Ajuster la vue pour bien cadrer le pays
+          map.fitBounds(borderLayer.getBounds(), {
+            padding: [10, 10], // Ajoute une marge de 30px autour
+            maxZoom: 14, // Empêche un zoom trop rapproché
+          });
+        })
+        .catch(function (error) {
+          console.error("Erreur de chargement de la frontière :", error);
+          // Vous pouvez afficher un message à l'utilisateur si besoin
+        });
+
+      /*
+
+      // ajout d'un marqueur
+      var marker = L.marker([51.5, -0.09]).addTo(map);
+      // précision du markeur
+      var circle = L.circle([51.508, -0.11], {
+        color: "red",
+        fillColor: "#f03",
+        fillOpacity: 0.5,
+        radius: 500,
+      }).addTo(map);
+
+      // ajouter un polygone
+
+      var polygon = L.polygon([
+        [51.509, -0.08],
+        [51.503, -0.06],
+        [51.51, -0.047],
+      ]).addTo(map);
+
+      // fait apparaitre des popups sur les markers
+      marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+      circle.bindPopup("I am a circle.").openPopup();
+      polygon.bindPopup("I am a polygon.");
+
+      // mettre un popup sur une localisation
+      var popup = L.popup()
+        .setLatLng([51.513, -0.09])
+        .setContent("I am a standalone popup.")
+        .openOn(map);
+
+      // lancer la fonction lorqu'on clic sur le cercle
+      function onCircleClick(e) {
+        alert("je suis un cercle de coordonnées " + e.latlng);
+      }
+
+      circle.on("click", onCircleClick);
+
+      // amélioration de la focntion en utilisant une alerte
+      var popup = L.popup();
+
+      function onMarkerClick(e) {
+        popup
+          .setLatLng(e.latlng)
+          .setContent("You clicked the marker at " + e.latlng.toString())
+          .openOn(map);
+      }
+
+      marker.on("click", onMarkerClick);
+
+      /*
+      //fonction pour géolocaliser ma position
+      function onLocationFound(e) {
+        var radius = e.accuracy;
+
+        L.marker(e.latlng)
+          .addTo(map)
+          .bindPopup("You are within " + radius + " meters from this point")
+          .openPopup();
+
+        L.circle(e.latlng, radius).addTo(map);
+      }
+
+      map.on("locationfound", onLocationFound());
+
+      // fonction pour erreur en cas d'echec de la geolocalisation
+      function onLocationError(e) {
+        alert(e.message);
+      }
+
+      map.on("locationerror", onLocationError());
+      */
+
+      //==============================================================================================
+      //==============================================================================================
+      //(==========================  Sauvegarder la position initiale ========================
+
+      var savedView = {
+        center: map.getCenter(), // Centre actuel
+        zoom: map.getZoom(), // Zoom actuel
+      };
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== Configuration du contrôle de localisation ========================
+      var locateControl = L.control
+        .locate({
+          position: "bottomright",
+          strings: {
+            title: "Me localiser",
+            popup: "Vous êtes à {distance} {unit} de ce point",
+            outsideMapBoundsMsg:
+              "Vous semblez être en dehors des limites de la carte",
+          },
+          locateOptions: {
+            maxZoom: 16,
+            watch: true,
+            enableHighAccuracy: true,
+          },
+          icon: "fas fa-location-crosshairs",
+          iconLoading: "fas fa-spinner fa-spin",
+          circleStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+            fillOpacity: 0.15,
+          },
+          markerStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+          },
+
+          // Options pour le retour
+          keepCurrentZoomLevel: false,
+          returnToPrevBounds: true, // Revenir à la vue précédente
+          flyTo: true, // Animation fluide
+          cacheLocation: true,
+
+          // Comportement au clic
+          clickBehavior: {
+            inView: "stop", // Si déjà dans la vue : s'arrête
+            outOfView: "setView", // Si hors vue : centre
+            inViewNotFollowing: "setView",
+          },
+        })
+        .addTo(map);
+
+      //========================= Événement quand on arrête la localisation===================
+      map.on("stopfollowing", function () {
+        // Revenir à la vue sauvegardée
+        map.flyTo(savedView.center, savedView.zoom, {
+          duration: 1, // Durée de l'animation en secondes
+        });
+        console.log("Retour à la position initiale");
+      });
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== deogjon ========================
+      var geojsonFeature = {
+        type: "Feature",
+        properties: {
+          name: "Coors Field",
+          amenity: "Baseball Stadium",
+          popupContent: "This is where the Rockies play!",
+        },
+        geometry: {
+          type: "Point",
+          coordinates: [51.508, -0.12],
+        },
+      };
+      L.geoJSON(geojsonFeature).addTo(map);
+
+      var myLines = [
+        {
+          type: "LineString",
+          coordinates: [
+            [-100, 40],
+            [-105, 45],
+            [-110, 55],
+          ],
+        },
+        {
+          type: "LineString",
+          coordinates: [
+            [-105, 40],
+            [-110, 45],
+            [-115, 55],
+          ],
+        },
+      ];
+
+      var myStyle = {
+        color: "#ff7800",
+        weight: 5,
+        opacity: 0.65,
+      };
+
+      L.geoJSON(myLines, {
+        style: myStyle,
+      }).addTo(map);
+
+      var myLayer = L.geoJSON().addTo(map);
+      myLayer.addData(geojsonFeature);
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== bar de recherche de position ========================
+
+      // Créez un marqueur global pour gérer la position
+      var searchMarker = null;
+
+      // Créez et ajoutez le contrôle de recherche
+      const addressSearchControl = L.control
+        .addressSearch("dfd2a95b77e745d99c1790210cfe836f", {
+          position: "topleft", // Position sur la carte
+          resultCallback: (address) => {
+            // Efface l'ancien marqueur
+            if (searchMarker) {
+              searchMarker.remove();
+            }
+
+            if (!address) return;
+
+            // Place un nouveau marqueur à l'adresse trouvée
+            searchMarker = L.marker([address.lat, address.lon])
+              .addTo(map)
+              .bindPopup(address.formatted)
+              .openPopup();
+
+            // Centre la carte sur le résultat
+            if (address.bbox) {
+              // Si on a une zone (ex: une ville), on s'adapte
+              map.fitBounds([
+                [address.bbox.lat1, address.bbox.lon1],
+                [address.bbox.lat2, address.bbox.lon2],
+              ]);
+            } else {
+              // Sinon, on zoome sur un point précis
+              map.setView([address.lat, address.lon], 15);
+            }
+          },
+          placeholder: "Rechercher une adresse...",
+        })
+        .addTo(map);
+
+      // Ajoute le contrôle à la carte
+      map.addControl(addressSearchControl);
+
+      // 1. Créer un conteneur HTML dédié pour la recherche
+      var searchContainer = L.DomUtil.create("div", "custom-search-container");
+      // 2. Récupérer l'élément HTML du contrôle et le placer dans notre conteneur
+      searchContainer.appendChild(addressSearchControl.getContainer());
+      // 3. Attacher ce conteneur au conteneur principal de la carte
+      map.getContainer().appendChild(searchContainer);
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== Creation de couche geoJSON =====================================
+
+      // 1. Créer la couche GeoJSON à partir de votre variable
+
+      map.createPane("mesParcelles");
+      map.getPane("mesParcelles").style.zIndex = 401;
+
+      var parcellesLayer = L.geoJSON(json_parcelle_1, {
+        pane: "mesParcelles",
+        // Style de base pour tous les polygones
+        style: {
+          fillColor: "#3388ff", // Couleur de remplissage
+          color: "#0000aa", // Couleur de la bordure
+          weight: 1, // Épaisseur de la bordure
+          opacity: 1, // Opacité de la bordure
+          fillOpacity: 0.2, // Opacité du remplissage
+        },
+
+        // Ajouter un popup à chaque parcelle
+        onEachFeature: function (feature, layer) {
+          layer.on("click", function (e) {
+            // Centrer la carte sur la parcelle cliquée
+            map.fitBounds(e.target.getBounds());
+
+            // Ouvrir le module avec les données
+            openParcelleModal(feature);
+
+            // Garder une référence à la couche cliquée (optionnel)
+            currentLayer = e.target;
+          });
+
+          // Garder un effet visuel au survol
+          layer.on({
+            mouseover: function (e) {
+              e.target.setStyle({ weight: 3, fillOpacity: 0.4 });
+            },
+            mouseout: function (e) {
+              parcellesLayer.resetStyle(e.target);
+            },
+          });
+        },
+      }).addTo(map);
+
+      // 2. Ajuster la vue de la carte pour montrer toutes les parcelles
+      // map.fitBounds(parcellesLayer.getBounds());
+
+      //==============================================================================================
+      //(========================== gestion des données des couches geoJSON =====================================
+
+      // Variables globales pour le module
+      let modal = document.getElementById("parcelleModal");
+      let currentFeature = null;
+      let isEditMode = false;
+
+      // Remplir et afficher le module
+      function openParcelleModal(feature) {
+        currentFeature = feature;
+        isEditMode = false;
+
+        // Remplir les champs du formulaire
+        document.querySelector('input[name="numero_lot"]').value =
+          feature.properties.numero_lot || "";
+        document.querySelector('input[name="numero_ilot"]').value =
+          feature.properties.numero_ilot || "";
+        document.querySelector('input[name="superficie"]').value =
+          feature.properties.superficie || "";
+        document.querySelector('input[name="nom_lotissement"]').value =
+          feature.properties.nom_lotissement || "";
+        document.querySelector('input[name="ville_commune"]').value =
+          feature.properties.ville_commune || "";
+
+        // Réinitialiser l'état des champs (verrouillés)
+        setInputsReadonly(true);
+
+        // Changer le texte du bouton Enregistrer
+        document.getElementById("btnSave").textContent = "Fermer";
+
+        // Afficher le module
+        modal.style.display = "block";
+      }
+
+      // Basculer entre mode lecture/édition
+      function setInputsReadonly(readonly) {
+        const inputs = document.querySelectorAll("#parcelleForm input");
+        inputs.forEach((input) => {
+          input.readOnly = readonly;
+          input.style.backgroundColor = readonly ? "#f0f0f0" : "#fff";
+          input.style.color = readonly ? "#666" : "#000";
+        });
+
+        // Mettre à jour l'icône du bouton modifier
+        const editIcon = document.querySelector("#btnEdit i");
+        editIcon.className = readonly ? "fas fa-edit" : "fas fa-save";
+      }
+
+      // Événements des boutons
+      document.getElementById("btnClose").onclick = function () {
+        modal.style.display = "none";
+      };
+
+      document.getElementById("btnEdit").onclick = function () {
+        isEditMode = !isEditMode;
+        setInputsReadonly(!isEditMode);
+
+        // Changer le texte du bouton Enregistrer
+        document.getElementById("btnSave").textContent = isEditMode
+          ? "Enregistrer"
+          : "Fermer";
+      };
+
+      document.getElementById("btnDelete").onclick = function () {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cette parcelle ?")) {
+          // Ici, logique de suppression (AJAX, etc.)
+          console.log("Suppression de:", currentFeature);
+          modal.style.display = "none";
+          // Optionnel: Supprimer la couche de la carte
+          // map.removeLayer(currentLayer);
+        }
+      };
+
+      document.getElementById("btnCancel").onclick = function () {
+        if (isEditMode) {
+          // Recharger les données originales
+          openParcelleModal(currentFeature);
+          isEditMode = false;
+        } else {
+          modal.style.display = "none";
+        }
+      };
+
+      document.getElementById("btnSave").onclick = function () {
+        if (isEditMode) {
+          // Enregistrer les modifications
+          const formData = {
+            numero_lot: document.querySelector('input[name="numero_lot"]')
+              .value,
+            numero_ilot: document.querySelector('input[name="numero_ilot"]')
+              .value,
+            superficie: document.querySelector('input[name="superficie"]')
+              .value,
+            nom_lotissement: document.querySelector(
+              'input[name="nom_lotissement"]',
+            ).value,
+            ville_commune: document.querySelector('input[name="ville_commune"]')
+              .value,
+          };
+
+          // Ici, logique d'enregistrement (AJAX, mise à jour de la couche, etc.)
+          console.log("Enregistrement des modifications:", formData);
+
+          // Mettre à jour l'objet feature
+          Object.assign(currentFeature.properties, formData);
+
+          // Désactiver le mode édition
+          isEditMode = false;
+          setInputsReadonly(true);
+          document.getElementById("btnSave").textContent = "Fermer";
+        } else {
+          // Fermer le module
+          modal.style.display = "none";
+        }
+      };
+
+      // Fermer le module en cliquant à l'extérieur
+      window.onclick = function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      //==============================================================================
+      //================================================================
+    </script>
+
+    <script src="js/api.js" type="module"></script>
+  </body>
+</html>
