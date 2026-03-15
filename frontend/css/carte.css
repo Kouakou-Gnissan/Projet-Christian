@@ -589,7 +589,7 @@ body.dark-theme .carte-content {
   }
 
   .search-container {
-    width: 85%;
+    width: 80%;
     top: 13px;
     margin-left: 30px;
   }
@@ -606,10 +606,10 @@ body.dark-theme .carte-content {
 
   .search-results {
     position: fixed; /* ← Passe en fixed sur mobile */
-    top: 125px;
+    top: 45px;
     left: 50%;
     transform: translateX(-50%);
-    width: 85%;
+    width: 90%;
     max-width: 350px;
     max-height: 40vh;
     z-index: 10001;
