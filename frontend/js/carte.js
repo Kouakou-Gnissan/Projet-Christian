@@ -6,15 +6,77 @@ const SUPABASE_KEY =
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.addEventListener("DOMContentLoaded", function () {
-  afficherSections();
-  afficherIlots();
-  afficherParcelles();
-});
+// Variables globales
+let map;
+let savedView = {};
 
-// ================= UTILITAIRES =================
+// Initialisation
+document.addEventListener("DOMContentLoaded", initMap);
 
-// Générateur de style réutilisable
+function initMap() {
+  // Création de la carte avec options de performance
+  map = L.map("map", {
+    preferCanvas: true, // Améliore les performances
+    fadeAnimation: false,
+    zoomAnimation: true,
+    markerZoomAnimation: true,
+    inertia: true,
+    inertiaDeceleration: 2000,
+  }).setView([7.55, -5.55], 12);
+
+  // Layer avec optimisation
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 22,
+    attribution: "&copy; OpenStreetMap",
+    updateWhenIdle: true, // Évite les chargements inutiles
+    keepBuffer: 2,
+  }).addTo(map);
+
+  // Sauvegarde de la vue initiale
+  savedView = {
+    center: map.getCenter(),
+    zoom: map.getZoom(),
+  };
+
+  // Configuration de la localisation
+  initLocateControl();
+
+  // Chargement des données
+  chargerToutesLesCouches();
+
+  // Gestionnaire de zoom pour les labels
+  map.on("zoomend", updateAllLabels);
+}
+
+function initLocateControl() {
+  L.control
+    .locate({
+      position: "bottomright",
+      strings: { title: "Me localiser" },
+      locateOptions: { maxZoom: 16, enableHighAccuracy: true },
+      circleStyle: {
+        color: "#007bff",
+        fillColor: "#007bff",
+        fillOpacity: 0.15,
+      },
+      markerStyle: { color: "#007bff", fillColor: "#007bff" },
+      returnToPrevBounds: true,
+      flyTo: true,
+      cacheLocation: true,
+    })
+    .addTo(map);
+
+  map.on("stopfollowing", () => {
+    map.flyTo(savedView.center, savedView.zoom, { duration: 1 });
+  });
+}
+
+// ================= CHARGEMENT DES COUCHES =================
+
+async function chargerToutesLesCouches() {
+  await Promise.all([afficherSections(), afficherIlots(), afficherParcelles()]);
+}
+
 function createLayerStyle(options) {
   return {
     fillColor: options.fillColor,
@@ -25,242 +87,159 @@ function createLayerStyle(options) {
   };
 }
 
-// Gestion dynamique des tailles de labels
-function updateLabelSize(className, rules) {
-  const zoom = map.getZoom();
-  let size = rules.default;
+// ================= COUCHE SECTIONS =================
 
-  for (const rule of rules.breakpoints) {
-    if (zoom >= rule.zoom) {
-      size = rule.size;
-      break;
-    }
-  }
-
-  document.querySelectorAll(className).forEach((el) => {
-    el.style.fontSize = size + "px";
-  });
-}
-
-// Un SEUL listener global
-map.on("zoomend", function () {
-  updateLabelSize(".label-section", {
-    default: 0,
-    color: "#220881",
-    zIndex: 200,
-
-    breakpoints: [
-      { zoom: 18, size: 100 },
-      { zoom: 16, size: 40 },
-      { zoom: 14, size: 18 },
-    ],
-  });
-
-  updateLabelSize(".label-ilot", {
-    default: 0,
-    breakpoints: [
-      { zoom: 18, size: 30 },
-      { zoom: 16, size: 16 },
-      { zoom: 14, size: 9 },
-    ],
-  });
-
-  updateLabelSize(".label-parcelle", {
-    default: 0,
-    breakpoints: [{ zoom: 18, size: 12 }],
-  });
-});
-
-// ======================================================================================================================//
-// ======================================================================================================================//
-// ===============================Afficher les couches des sections sur la carte=========================================//
 async function afficherSections() {
   try {
     const { data, error } = await supabase
       .from("abc_section")
       .select("fid, geom_geojson, SECTION");
 
-    if (error) return console.error(error.message);
+    if (error) throw error;
 
     const geojson = {
       type: "FeatureCollection",
       features: data.map((item) => ({
         type: "Feature",
         geometry: item.geom_geojson,
-        properties: {
-          fid: item.fid,
-          nom: item.SECTION,
-        },
+        properties: { fid: item.fid, nom: item.SECTION },
       })),
     };
 
-    if (!map.getPane("mesSections")) {
-      map.createPane("mesSections");
-      map.getPane("mesSections").style.zIndex = 200;
-    }
+    map.createPane("mesSections");
+    map.getPane("mesSections").style.zIndex = 200;
 
-    const layer = L.geoJSON(geojson, {
+    L.geoJSON(geojson, {
       pane: "mesSections",
       style: createLayerStyle({
         fillColor: "#33ffcc",
         borderColor: "#220881",
         opacity: 0.3,
-        fillOpacity: 0.2,
       }),
-      onEachFeature: function (feature, layer) {
-        layer.bindTooltip(`${feature.properties.nom}`, {
+      onEachFeature: (feature, layer) => {
+        layer.bindTooltip(feature.properties.nom, {
           permanent: true,
           direction: "center",
           className: "label-section",
         });
-
         layer.on({
-          mouseover: (e) => e.target.setStyle({ weight: 3, fillOpacity: 0.4 }),
+          mouseover: (e) => e.target.setStyle({ weight: 3 }),
           mouseout: () =>
             layer.setStyle(
               createLayerStyle({
                 fillColor: "#33ffcc",
                 borderColor: "#220881",
-                opacity: 0.3,
-                fillOpacity: 0.2,
               }),
             ),
-          click: (e) => map.fitBounds(e.target.getBounds()),
         });
       },
     }).addTo(map);
-
-    map.fitBounds(layer.getBounds());
   } catch (err) {
-    console.error(err.message);
+    console.error("Erreur sections:", err.message);
   }
 }
-// ======================================================================================================================//
-// ======================================================================================================================//
-// ===============================Afficher les couches des ilots sur la carte============================================//
+
+// ================= COUCHE ILOTS =================
+
 async function afficherIlots() {
   try {
     const { data, error } = await supabase
       .from("abc_ilot")
       .select("fid, geom_geojson, ILOT");
 
-    if (error) return console.error(error.message);
+    if (error) throw error;
 
     const geojson = {
       type: "FeatureCollection",
       features: data.map((item) => ({
         type: "Feature",
         geometry: item.geom_geojson,
-        properties: {
-          fid: item.fid,
-          nom: item.ILOT,
-        },
+        properties: { fid: item.fid, nom: item.ILOT },
       })),
     };
 
-    if (!map.getPane("mesIlots")) {
-      map.createPane("mesIlots");
-      map.getPane("mesIlots").style.zIndex = 300;
-    }
+    map.createPane("mesIlots");
+    map.getPane("mesIlots").style.zIndex = 300;
 
-    const layer = L.geoJSON(geojson, {
+    L.geoJSON(geojson, {
       pane: "mesIlots",
-      style: createLayerStyle({
-        fillColor: "#ff33cc",
-        borderColor: "#220881",
-      }),
-      onEachFeature: function (feature, layer) {
-        layer.bindTooltip(`${feature.properties.nom}`, {
+      style: createLayerStyle({ fillColor: "#ff33cc", borderColor: "#220881" }),
+      onEachFeature: (feature, layer) => {
+        layer.bindTooltip(feature.properties.nom, {
           permanent: true,
           direction: "center",
           className: "label-ilot",
         });
-
-        layer.on({
-          mouseover: (e) => e.target.setStyle({ weight: 3, fillOpacity: 0.4 }),
-          mouseout: () =>
-            layer.setStyle(
-              createLayerStyle({
-                fillColor: "#ff33cc",
-                borderColor: "#220881",
-              }),
-            ),
-          click: (e) => map.fitBounds(e.target.getBounds()),
-        });
       },
     }).addTo(map);
   } catch (err) {
-    console.error(err.message);
+    console.error("Erreur ilots:", err.message);
   }
 }
 
-// ======================================================================================================================//
-// ======================================================================================================================//
-// ===============================Afficher les couches des parcelles sur la carte========================================//
+// ================= COUCHE PARCELLES =================
+
 async function afficherParcelles() {
   try {
     const { data, error } = await supabase
       .from("abc_parcelle")
       .select("fid, id_parcelle, geom_geojson");
 
-    if (error) return console.error(error.message);
+    if (error) throw error;
 
     const geojson = {
       type: "FeatureCollection",
       features: data.map((item) => ({
         type: "Feature",
         geometry: item.geom_geojson,
-        properties: {
-          fid: item.fid,
-          nom: item.id_parcelle,
-        },
+        properties: { fid: item.fid, nom: item.id_parcelle },
       })),
     };
 
-    if (!map.getPane("mesParcelles")) {
-      map.createPane("mesParcelles");
-      map.getPane("mesParcelles").style.zIndex = 400;
-    }
+    map.createPane("mesParcelles");
+    map.getPane("mesParcelles").style.zIndex = 400;
 
-    const layer = L.geoJSON(geojson, {
+    L.geoJSON(geojson, {
       pane: "mesParcelles",
-      style: createLayerStyle({
-        fillColor: "#3388ff",
-        borderColor: "#aa0017",
-        fillOpacity: 0.2,
-      }),
-      onEachFeature: function (feature, layer) {
-        layer.bindTooltip(`${feature.properties.nom}`, {
+      style: createLayerStyle({ fillColor: "#3388ff", borderColor: "#aa0017" }),
+      onEachFeature: (feature, layer) => {
+        layer.bindTooltip(feature.properties.nom, {
           permanent: true,
           direction: "center",
           className: "label-parcelle",
         });
-
         layer.on({
-          mouseover: (e) => e.target.setStyle({ weight: 3, fillOpacity: 0.4 }),
-          mouseout: () =>
-            layer.setStyle(
-              createLayerStyle({
-                fillColor: "#3388ff",
-                borderColor: "#aa0017",
-                fillOpacity: 0.2,
-              }),
-            ),
-          click: (e) => {
-            const parcelleId = feature.properties.fid;
-            console.log("ilot; " + parcelleId);
-            map.fitBounds(e.target.getBounds());
-            afficherInfosParcelle(parcelleId);
-            openSideModal();
-          },
+          click: () => afficherInfosParcelle(feature.properties.fid),
         });
       },
     }).addTo(map);
   } catch (err) {
-    console.error(err.message);
+    console.error("Erreur parcelles:", err.message);
   }
 }
 
+// ================= GESTION DES LABELS =================
+
+function updateAllLabels() {
+  const zoom = map.getZoom();
+
+  document.querySelectorAll(".label-section").forEach((el) => {
+    el.style.fontSize = zoom >= 16 ? "14px" : zoom >= 14 ? "10px" : "0px";
+  });
+
+  document.querySelectorAll(".label-ilot").forEach((el) => {
+    el.style.fontSize = zoom >= 16 ? "12px" : zoom >= 14 ? "8px" : "0px";
+  });
+
+  document.querySelectorAll(".label-parcelle").forEach((el) => {
+    el.style.fontSize = zoom >= 18 ? "10px" : "0px";
+  });
+}
+
+// ================= GESTION DES MODALES =================
+
+let sideModal = document.getElementById("parcelleSideModal");
+let isEditMode = false;
 
 async function afficherInfosParcelle(parcelleId) {
   const { data, error } = await supabase
@@ -270,144 +249,75 @@ async function afficherInfosParcelle(parcelleId) {
     .single();
 
   if (error) {
-    console.error("Erreur récupération parcelle :", error.message);
+    console.error("Erreur:", error.message);
     return;
   }
 
-  console.log("parcelle trouvé :", data);
-
   await chargerChampSection();
-  afficherDetailParcelle(data); // ta fonction d'affichage
+  remplirFormulaire(data);
+  sideModal.classList.add("active");
 }
 
+function remplirFormulaire(data) {
+  const form = document.forms.parcelleForm;
+  if (!form) return;
 
-function afficherDetailParcelle(data) {
-
-  const form = document.getElementById("parcelleForm");
-
-  // ===== IDENTIFIANT =====
   form.id_parcelle.value = data.id_parcelle || "";
-
-  // ===== IDENTIFICATION CADASTRALE =====
   form.parcelle.value = data.id_parcelle || "";
   form.section_parcelle.value = data.section_parcelle || "";
   form.section.value = data.section || "";
   form.ilot.value = data.ilot || "";
   form.lot.value = data.lot || "";
   form.titre_foncier.value = data.titre_foncier || "";
-
-  // ===== CARACTERISTIQUES PHYSIQUES =====
   form.superficie.value = data.superficie || "";
   form.layer.value = data.layer || "";
-
-  // géométrie (on affiche juste un résumé)
   form.geom.value = data.geom_geojson ? "Géométrie disponible" : "";
-
-  // ===== LOCALISATION =====
   form.Commune.value = data.commune || "";
   form.localite.value = data.localite || "";
   form.quartier.value = data.quartier || "";
   form.circonscription_fonciere.value = data.circonscription_fonciere || "";
-
-  // ===== STATUT =====
   form.satus_cadastrale.value = data.satut_cadastre || "";
   form.proprietaire.value = data.proprietaire || "";
-
-  // ===== INFORMATIONS FISCALES =====
   form.annee_aquisition.value = data.annee_acquisition || "";
   form.annee_declaration.value = data.annee_declaration || "";
   form.numero_declaration.value = data.numero_declaration || "";
-  form.valeur_marchande.value = data.valeur_marchande_propriete_non_batie|| "";
+  form.valeur_marchande.value = data.valeur_marchande_propriete_non_batie || "";
   form.proprité_batie.value = data.propriete_batie || "";
-
-  // ===== OUVRIR LE MODAL =====
-  const modal = document.getElementById("parcelleSideModal");
-  modal.classList.add("active");
 }
 
 async function chargerChampSection() {
-  const select = document.getElementById("section");
-
   const { data, error } = await supabase
     .from("abc_section")
     .select("SECTION")
-    .order("fid", { ascending: true });
+    .order("fid");
 
-  if (error) {
-    console.error("Erreur chargement nature :", error.message);
-    return;
-  }
+  if (error) return;
 
-  console.log(data);
-
-  // Vider le select
-  select.innerHTML = "";
-
-  // Ajouter option vide
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "-- Sélectionner --";
-  select.appendChild(defaultOption);
-
-  // Ajouter les options dynamiquement
+  const select = document.getElementById("section");
+  select.innerHTML = '<option value="">Sélectionner</option>';
   data.forEach((item) => {
     const option = document.createElement("option");
-    option.value = item.SECTION; // ce qui sera enregistré en base
-    option.textContent = "section " + item.SECTION; // ce que l'utilisateur voit
+    option.value = item.SECTION;
+    option.textContent = `Section ${item.SECTION}`;
     select.appendChild(option);
   });
 }
 
-// ======================Gestion des modales ===================
-// Variables globales
-let sideModal = document.getElementById("parcelleSideModal");
-let ownerModal = document.getElementById("ownerDetailModal");
-let isEditMode = false;
-
-// Ouvrir le modal avec les données
-function openSideModal(parcelleData) {
-  if (!sideModal) return;
-
-  // Remplir tous les champs
-
-  // Réinitialiser le mode édition
-  if (isEditMode) toggleEditMode();
-
-  sideModal.classList.add("active");
-}
-
-// Fermer le modal
-function closeSideModal() {
-  if (!sideModal) return;
-  sideModal.classList.remove("active");
-  if (isEditMode) toggleEditMode();
-}
-
-// Basculer mode édition
 function toggleEditMode() {
   isEditMode = !isEditMode;
 
-  // Tous les champs éditables
-  let inputs = document.querySelectorAll("#parcelleForm .form-control");
-  let selects = document.querySelectorAll("#parcelleForm select");
-
-  inputs.forEach((input) => {
-    if (isEditMode) {
-      input.removeAttribute("readonly");
-    } else {
-      input.setAttribute("readonly", true);
-    }
+  document.querySelectorAll("#parcelleForm .form-control").forEach((input) => {
+    isEditMode
+      ? input.removeAttribute("readonly")
+      : input.setAttribute("readonly", true);
   });
 
-  selects.forEach((select) => {
-    if (isEditMode) {
-      select.removeAttribute("disabled");
-    } else {
-      select.setAttribute("disabled", true);
-    }
+  document.querySelectorAll("#parcelleForm select").forEach((select) => {
+    isEditMode
+      ? select.removeAttribute("disabled")
+      : select.setAttribute("disabled", true);
   });
 
-  // Afficher/masquer les boutons
   document
     .getElementById("toggleEditMode")
     .classList.toggle("active", isEditMode);
@@ -417,108 +327,111 @@ function toggleEditMode() {
   document.getElementById("saveParcelleBtn").style.display = isEditMode
     ? "flex"
     : "none";
-
-  // Changer le titre
   document.getElementById("modalTitle").textContent = isEditMode
     ? "Modifier parcelle"
     : "Détails de la parcelle";
 }
 
-// Annuler les modifications
-function cancelEdit() {
-  // Recharger les données originales
-  // À implémenter selon votre logique
-  toggleEditMode();
+function closeSideModal() {
+  sideModal.classList.remove("active");
+  if (isEditMode) toggleEditMode();
 }
 
-// Sauvegarder les modifications
-async function saveParcelle() {
+// ================= RECHERCHE =================
 
-  const form = document.getElementById("parcelleForm");
+const searchInput = document.querySelector(".search-input");
+const resultsBox = document.getElementById("searchResults");
+const clearBtn = document.querySelector(".search-clear");
 
-  const idParcelle = form.id_parcelle.value;
+searchInput.addEventListener("input", async function () {
+  const query = this.value.trim();
 
-  if (!idParcelle) {
-    console.error("ID parcelle manquant");
+  if (query.length < 2) {
+    resultsBox.innerHTML = "";
     return;
   }
 
-  // Données à envoyer à Supabase (mapping propre)
- const updateData = {
+  resultsBox.innerHTML =
+    '<div class="search-loading"><span class="material-symbols-rounded">progress_activity</span>Recherche...</div>';
 
-  section: form.section.value,
-  ilot: form.ilot.value,
-  lot: form.lot.value,
-  titre_foncier: nullIfEmpty(form.titre_foncier.value),
+  const { data, error } = await supabase
+    .from("abc_parcelle")
+    .select("fid, id_parcelle, geom_geojson")
+    .ilike("id_parcelle", `%${query}%`)
+    .limit(10);
 
-  superficie: nullIfEmpty(form.superficie.value),
-  layer: nullIfEmpty(form.layer.value),
+  if (error) {
+    resultsBox.innerHTML = '<div class="search-no-results">Erreur</div>';
+    return;
+  }
 
-  commune: nullIfEmpty(form.Commune.value),
-  localite: nullIfEmpty(form.localite.value),
-  quartier: nullIfEmpty(form.quartier.value),
-  circonscription_fonciere: nullIfEmpty(form.circonscription_fonciere.value),
+  afficherResultats(data, query);
+});
 
-  statut_cadastre: nullIfEmpty(form.satus_cadastrale.value),
- // proprietaire: nullIfEmpty(form.proprietaire.value),
+function afficherResultats(data, query) {
+  if (!data.length) {
+    resultsBox.innerHTML = `<div class="search-no-results"><span class="material-symbols-rounded">search_off</span><p>Aucun résultat pour "${query}"</p></div>`;
+    return;
+  }
 
-  annee_acquisition: nullIfEmpty(form.annee_aquisition.value),
-  annee_declaration: nullIfEmpty(form.annee_declaration.value),
+  resultsBox.innerHTML = data
+    .map(
+      (parcelle) => `
+    <div class="search-item" data-id="${parcelle.fid}" data-geom='${JSON.stringify(parcelle.geom_geojson)}'>
+      <div class="search-item-icon"><span class="material-symbols-rounded">crop_square</span></div>
+      <div class="search-item-content">
+        <div class="search-item-title">${parcelle.id_parcelle.replace(new RegExp(query, "gi"), (match) => `<span class="search-highlight">${match}</span>`)}</div>
+        <div class="search-item-subtitle">Parcelle cadastrale</div>
+      </div>
+      <span class="search-item-badge">Parcelle</span>
+    </div>
+  `,
+    )
+    .join("");
 
-  numero_declaration: nullIfEmpty(form.numero_declaration.value),
+  // 👇 BLOQUER LA PROPAGATION DU SCROLL
+  resultsBox.addEventListener("wheel", function (e) {
+    e.stopPropagation(); // Empêche le scroll d'atteindre la carte
+  });
 
-  valeur_marchande_propriete_non_batie: nullIfEmpty(form.valeur_marchande.value),
+  // Pour mobile (touch events)
+  resultsBox.addEventListener("touchmove", function (e) {
+    e.stopPropagation();
+  });
 
-  propriete_batie: nullIfEmpty(form.proprité_batie.value),
+  // CORRECTION ICI : appel direct à zoomParcelle (votre fonction originale)
+  document.querySelectorAll(".search-item").forEach((item) => {
+    item.addEventListener("click", function () {
+      const geom = JSON.parse(this.dataset.geom);
+      const id = this.dataset.id;
+      zoomSurParcelle(id);
+    });
+  });
+}
 
-  update_at: new Date().toISOString()
-};
+async function zoomSurParcelle(fid) {
+  const { data, error } = await supabase
+    .from("abc_parcelle")
+    .select("geom_geojson, id_parcelle")
+    .eq("fid", fid)
+    .single();
 
-  try {
-
-    const { error } = await supabase
-      .from("abc_parcelle")
-      .update(updateData)
-      .eq("id_parcelle", idParcelle);
-
-    if (error) {
-      console.error("Erreur Supabase :", error.message);
-
-      notifications.show(
-        "Erreur lors de la modification",
-        "error",
-        "Modification échouée"
-      );
-
-      return;
-    }
-
-    console.log("Parcelle mise à jour :", updateData);
-
-    notifications.show(
-      "La parcelle a été modifiée avec succès",
-      "success",
-      "Modification enregistrée"
-    );
-
-    // quitter mode édition
-    toggleEditMode();
-
-  } catch (err) {
-
-    console.error("Erreur JS :", err.message);
-
+  if (!error && data) {
+    const layer = L.geoJSON(data.geom_geojson);
+    map.fitBounds(layer.getBounds());
+    searchInput.value = data.id_parcelle;
+    resultsBox.innerHTML = "";
   }
 }
 
-// transformer les champs vide en null
-function nullIfEmpty(value) {
-  return value === "" ? null : value;
-}
+clearBtn.onclick = () => {
+  searchInput.value = "";
+  resultsBox.innerHTML = "";
+};
 
-// Initialisation
-document.addEventListener("DOMContentLoaded", function () {
-  // Boutons du modal principal
+// ================= INIT ÉCOUTEURS =================
+
+document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("closeSideModal")
     ?.addEventListener("click", closeSideModal);
@@ -527,119 +440,48 @@ document.addEventListener("DOMContentLoaded", function () {
     ?.addEventListener("click", toggleEditMode);
   document
     .getElementById("cancelEditBtn")
-    ?.addEventListener("click", cancelEdit);
+    ?.addEventListener("click", toggleEditMode);
   document
     .getElementById("saveParcelleBtn")
     ?.addEventListener("click", saveParcelle);
-
-  // Bouton voir propriétaire
-  document
-    .getElementById("viewOwnerFromParcelleBtn")
-    ?.addEventListener("click", function () {
-      if (ownerModal) ownerModal.classList.add("active");
-    });
-
-  // Bouton voir géométrie
-  document
-    .getElementById("viewGeomBtn")
-    ?.addEventListener("click", function () {
-      let geom = document.getElementById("geom")?.value;
-      if (geom) {
-        alert("Voir sur la carte: " + geom);
-        // Ici, centrer la carte sur la géométrie
-      }
-    });
-
-  // Fermeture modal propriétaire
-  document
-    .getElementById("closeOwnerModal")
-    ?.addEventListener("click", function () {
-      if (ownerModal) ownerModal.classList.remove("active");
-    });
-
-  // Touche Echap
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      if (ownerModal?.classList.contains("active")) {
-        ownerModal.classList.remove("active");
-      } else {
-        closeSideModal();
-      }
-    }
-  });
-
- 
 });
 
+async function saveParcelle() {
+  const form = document.forms.parcelleForm;
+  const idParcelle = form.id_parcelle.value;
 
-//=======================================================================================
-//=======================================================================================
-//====================================GESSTION DE LA RECHERCHE==========================================
+  if (!idParcelle) return;
 
+  const updateData = {
+    section: form.section.value || null,
+    ilot: form.ilot.value || null,
+    lot: form.lot.value || null,
+    titre_foncier: form.titre_foncier.value || null,
+    superficie: form.superficie.value || null,
+    commune: form.Commune.value || null,
+    quartier: form.quartier.value || null,
+    annee_acquisition: form.annee_aquisition.value || null,
+    annee_declaration: form.annee_declaration.value || null,
+    numero_declaration: form.numero_declaration.value || null,
+    valeur_marchande_propriete_non_batie: form.valeur_marchande.value || null,
+    update_at: new Date().toISOString(),
+  };
 
-// fonction de recherche supabase 
-const searchInput = document.querySelector(".search-input");
-const resultsBox = document.getElementById("searchResults");
-
-searchInput.addEventListener("input", async function () {
-
-  const query = this.value.trim();
-
-  if (query.length < 2) {
-    resultsBox.innerHTML = "";
-    return;
-  }
-
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("abc_parcelle")
-    .select("fid,id_parcelle,geom_geojson")
-    .ilike("id_parcelle", `%${query}%`)
-    .limit(10);
+    .update(updateData)
+    .eq("id_parcelle", idParcelle);
 
-  if (error) {
-    console.error(error.message);
-    return;
+  if (!error) {
+    showNotification("Parcelle mise à jour avec succès");
+    toggleEditMode();
   }
-
-  afficherResultats(data);
-});
-
-
-// afficher les resultats
-function afficherResultats(data){
-
-  resultsBox.innerHTML = "";
-
-  data.forEach(parcelle => {
-
-    const item = document.createElement("div");
-    item.className = "search-item";
-    item.textContent = parcelle.id_parcelle;
-
-    item.onclick = () => zoomParcelle(parcelle);
-
-    resultsBox.appendChild(item);
-
-  });
-
 }
 
-// zoom sur la parcelle
-function zoomParcelle(parcelle){
-
-  resultsBox.innerHTML = "";
-  searchInput.value = parcelle.id_parcelle;
-
-  const layer = L.geoJSON(parcelle.geom_geojson);
-
-  map.fitBounds(layer.getBounds());
-
+function showNotification(msg) {
+  const notif = document.createElement("div");
+  notif.className = "save-success";
+  notif.innerHTML = `<span class="material-symbols-rounded">check_circle</span>${msg}`;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 3000);
 }
-
-// affacer la recherche
-document.querySelector(".search-clear").onclick = function(){
-
-  searchInput.value = "";
-  resultsBox.innerHTML = "";
-
-};

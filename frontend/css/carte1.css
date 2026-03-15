@@ -37,6 +37,7 @@ body.dark-theme {
     );
 }
 
+
 body {
   background: var(--color-bg-primary);
 }
@@ -45,99 +46,352 @@ body.dark-theme .carte-content {
   border: 1px solid var(--color-border);
 }
 
-/* ===========================================================================
-   CARTE LEAFLET - Optimisation performance
-   ========================================================================== */
-
-/* Conteneur principal */
 .carte-content {
   max-width: 1200px;
-  height: 630px !important;
+  height: 630px;
   padding: 30px;
   position: relative;
   overflow: hidden;
   border-radius: 23px;
   background: var(--color-card);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 1 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-#map {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 1;
-  border-radius: 20px;
+#map{
+  width:100%;
+  
+  position:relative;
+  z-index:1;
 }
 
-/* ===========================================================================
-   OPTIMISATION PERFORMANCE LEAFLET
-   ========================================================================== */
-
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  font-family: "Poppins", sans-serif;
-  background: #f8fafc;
+.leaflet-container{
   touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  will-change: transform; /* Optimisation performance */
 }
 
-/* Désactiver les animations inutiles sur mobile */
-.leaflet-fade-anim .leaflet-popup,
-.leaflet-fade-anim .leaflet-tile {
-  will-change: opacity;
+.leaflet-container{
+  touch-action: manipulation;
 }
 
-.leaflet-zoom-anim .leaflet-zoom-animated {
-  will-change: transform;
-}
-
-/* ===========================================================================
-   CONTRÔLES LEAFLET - Optimisés
-   ========================================================================== */
-
-/* Contrôles de zoom - Cachés sur mobile */
-.leaflet-control-zoom {
-  border: none !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 12px !important;
-  overflow: hidden;
-  transition: opacity 0.3s ease;
-}
-
-.leaflet-control-zoom a {
-  width: 45px !important;
-  height: 45px !important;
-  line-height: 45px !important;
-  font-size: 20px !important;
-  color: #4b5563 !important;
-  background-color: white !important;
-  border: none !important;
-  transition: all 0.2s ease !important;
-}
-
-.leaflet-control-zoom a:hover {
-  background-color: #f3f4f6 !important;
-  color: #6366f1 !important;
-}
-
-.leaflet-control-zoom a.leaflet-disabled {
-  color: #d1d5db !important;
-}
-
-/* Cacher zoom sur mobile */
 @media (max-width: 768px) {
-  .leaflet-control-zoom {
-    opacity: 0;
-    pointer-events: none;
+  .carte-content {
+    padding: 18px;
+    z-index: 1;
   }
 }
 
 /* ===========================================================================
-   BOUTON DE GÉOLOCALISATION (inchangé)
-   ========================================================================== */
+==============================================================================
+==========bare de recherche ==============*/
 
+.search-container{
+  position: relative;
+  width: 400px;
+  left: 20%;
+  z-index: 1000;
+
+}
+
+.search-wrapper {
+  
+  position: relative;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  
+}
+
+.search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 50px 0 50px;
+  
+  font-size: 14px;
+  font-family:'Poppins',sans-serif;
+  border: 2px solid #e0e0e0;
+  border-radius: 30px;
+  outline: none;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.search-input:hover {
+  border-color: #b0b0b0;
+}
+
+.search-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  color: #9ca3af;
+  font-size: 22px;
+  pointer-events: none;
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #9ca3af;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.search-clear:hover {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.search-clear .material-symbols-rounded {
+  font-size: 20px;
+}
+.search-results {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 3000;
+  border: 1px solid #e5e7eb;
+  margin-top: 5px;
+}
+
+.search-results:empty {
+  display: none;
+}
+
+/* Élément de résultat individuel */
+.search-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 3000;
+}
+
+.search-item:last-child {
+  border-bottom: none;
+}
+
+.search-item:hover {
+  background-color: #f9fafb;
+}
+
+.search-item.selected,
+.search-item.active {
+  background-color: #eef2ff;
+  border-left: 3px solid #6366f1;
+}
+
+/* Icône dans les résultats */
+.search-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  color: #4b5563;
+  flex-shrink: 0;
+}
+
+.search-item-icon .material-symbols-rounded {
+  font-size: 20px;
+}
+
+/* Contenu texte du résultat */
+.search-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-item-subtitle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-item-subtitle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.search-item-subtitle .material-symbols-rounded {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Badge de catégorie */
+.search-item-badge {
+  padding: 4px 8px;
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Badge de type (parcelle, section, etc) */
+.search-item-type {
+  padding: 2px 8px;
+  background: #f3f4f6;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+/* Message quand aucun résultat */
+.search-no-results {
+  padding: 24px 16px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.search-no-results .material-symbols-rounded {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  color: #9ca3af;
+  opacity: 0.5;
+}
+
+/* Indicateur de chargement */
+.search-loading {
+  padding: 24px 16px;
+  text-align: center;
+  color: #6366f1;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.search-loading .material-symbols-rounded {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* En-tête de section dans les résultats */
+.search-results-header {
+  padding: 8px 16px;
+  background: #f9fafb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Surlignage du texte recherché */
+.search-highlight {
+  background-color: #fef3c7;
+  font-weight: 600;
+  color: #d97706;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+/* Version compacte */
+.search-results.compact .search-item {
+  padding: 8px 12px;
+}
+
+.search-results.compact .search-item-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.search-results.compact .search-item-title {
+  font-size: 0.85rem;
+}
+
+/* Version avec images */
+.search-item-thumbnail {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f3f4f6;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-container {
+    top: 10px;
+    padding: 0 3px;
+    left: 0;
+    width: 100%;
+    
+  }
+
+  .search-wrapper {
+    left: 0;
+    margin-left: 25px;
+  }
+
+  .search-input {
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .search-icon {
+    font-size: 20px;
+    left: 16px;
+  }
+
+  .search-results {
+    margin-left: 30px;
+    max-width: 350px;
+  }
+}
+
+/* ===========================================================================
+==============================================================================
+==========Personnalisation du bouton de géolocalisation Leaflet ==============*/
 .leaflet-control-locate {
   border: none !important;
 }
@@ -159,10 +413,11 @@ body.dark-theme .carte-content {
   transform: scale(1.1) !important;
 }
 
+/* Icône */
 .leaflet-control-locate a:before {
   font-family: "Font Awesome 6 Free" !important;
   font-weight: 900 !important;
-  content: "\f3c5" !important;
+  content: "\f3c5" !important; /* Code de l'icône location-crosshairs */
   color: #007bff !important;
   font-size: 20px !important;
 }
@@ -171,14 +426,40 @@ body.dark-theme .carte-content {
   color: white !important;
 }
 
+/* Style quand la localisation est active */
 .leaflet-control-locate.following a,
 .leaflet-control-locate.requesting a {
   background-color: #007bff !important;
+  animation: spin 2s infinite !important;
+}
+
+.leaflet-control-locate.following a:before {
+  content: "\f192" !important; /* Cercle plein au lieu de cible */
+}
+
+.leaflet-control-locate.requesting a:before {
+  content: "\f110" !important; /* Spinner qui tourne */
+  animation: spin 1s linear infinite !important;
 }
 
 .leaflet-control-locate.following a:before,
 .leaflet-control-locate.requesting a:before {
   color: white !important;
+}
+
+/* Animation de pulsation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cacher le texte du titre au survol (optionnel) */
+.leaflet-control-locate a span {
+  display: none !important;
 }
 
 @media (max-width: 768px) {
@@ -192,285 +473,11 @@ body.dark-theme .carte-content {
   }
 }
 
-/* ===========================================================================
-   BARRE DE RECHERCHE - Structure propre
-   ========================================================================== */
 
-.search-container {
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 400px;
-  z-index: 2000;
-}
-
-.search-wrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 50px;
-  font-size: 15px;
-  font-family: "Poppins", sans-serif;
-  border: 2px solid #e5e7eb;
-  border-radius: 40px;
-  outline: none;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease;
-}
-
-.search-input:hover {
-  border-color: #cbd5e1;
-}
-
-.search-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
-}
-
-.search-icon {
-  position: absolute;
-  left: 18px;
-  color: #9ca3af;
-  font-size: 24px;
-  pointer-events: none;
-  z-index: 2001;
-}
-
-.search-clear {
-  position: absolute;
-  right: 8px;
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
-  border-radius: 50%;
-  color: #9ca3af;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  z-index: 2001;
-}
-
-.search-clear:hover {
-  background-color: #f3f4f6;
-  color: #4b5563;
-}
-
-.search-clear .material-symbols-rounded {
-  font-size: 22px;
-}
-
-/* ===========================================================================
-   RÉSULTATS DE RECHERCHE - Scrollable et fluide
-   ========================================================================== */
-
-/* ===========================================================================
-   RÉSULTATS DE RECHERCHE - Scrollable sans affecter la carte
-   ========================================================================== */
-
-.search-results {
-  position: absolute;
-  top: 60px;
-  left: 0;
-  width: 100%;
-  max-height: 350px;
-  overflow-y: auto; /* ← Active le scroll interne */
-  -webkit-overflow-scrolling: touch; /* ← Scroll fluide sur mobile */
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e5e7eb;
-  z-index: 10000; /* ← Z-index TRÈS élevé */
-  pointer-events: auto; /* ← Capture tous les événements */
-}
-
-/* Empêcher la propagation des événements de scroll à la carte */
-.search-results * {
-  pointer-events: auto;
-}
-
-/* Important : arrêter la propagation du scroll */
-.search-results {
-  overscroll-behavior: contain; /* ← Empêche le scroll de déborder */
-}
-
-.search-results:empty {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Scrollbar personnalisée */
-.search-results::-webkit-scrollbar {
-  width: 6px;
-}
-
-.search-results::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
-}
-
-.search-results::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.search-results::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Items de résultat */
-.search-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s ease;
-}
-
-.search-item:last-child {
-  border-bottom: none;
-}
-
-.search-item:hover {
-  background-color: #f8fafc;
-}
-
-.search-item.selected,
-.search-item.active {
-  background-color: #eef2ff;
-  border-left: 4px solid #6366f1;
-}
-
-/* Icône résultat */
-.search-item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  background: #f1f5f9;
-  border-radius: 12px;
-  color: #4b5563;
-  flex-shrink: 0;
-}
-
-.search-item-icon .material-symbols-rounded {
-  font-size: 24px;
-}
-
-/* Contenu résultat */
-.search-item-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.search-item-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-item-subtitle {
-  font-size: 0.85rem;
-  color: #64748b;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.search-item-subtitle span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.search-item-subtitle .material-symbols-rounded {
-  font-size: 16px;
-  color: #94a3b8;
-}
-
-/* Badge */
-.search-item-badge {
-  padding: 5px 12px;
-  background: #e0e7ff;
-  color: #4f46e5;
-  border-radius: 30px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* États */
-.search-loading,
-.search-no-results {
-  padding: 30px 20px;
-  text-align: center;
-  color: #64748b;
-}
-
-.search-loading .material-symbols-rounded {
-  animation: spin 1s linear infinite;
-  font-size: 32px;
-  color: #6366f1;
-  margin-bottom: 8px;
-}
-
-.search-no-results .material-symbols-rounded {
-  font-size: 40px;
-  color: #cbd5e1;
-  margin-bottom: 8px;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* En-tête de section */
-.search-results-header {
-  padding: 10px 18px;
-  background: #f8fafc;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #475569;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-/* Surlignage */
-.search-highlight {
-  background-color: #fef9c3;
-  font-weight: 600;
-  color: #854d0e;
-  padding: 2px 4px;
-  border-radius: 4px;
-}
-
-/* ===========================================================================
-   LABELS DES COUCHES
-   ========================================================================== */
+/*===============================================================
+================================== style des couches =========================
+=================================================================*/
+/* ================= LABELS GÉNÉRAUX ================= */
 
 .leaflet-tooltip {
   background: transparent !important;
@@ -479,241 +486,37 @@ body.dark-theme .carte-content {
   font-weight: 600;
   text-align: center;
   pointer-events: none;
-  transition: font-size 0.1s ease;
 }
 
+/* Sections */
 .label-section {
   color: #220881 !important;
-  font-size: 14px;
-  text-shadow: 1px 1px 2px white;
+  z-index: 100 !important;
+  align-items: center !important;
+  font-size: 10px;
 }
 
+/* Ilots */
 .label-ilot {
   color: #8b006f !important;
-  font-size: 12px;
-  text-shadow: 1px 1px 2px white;
-}
-
-.label-parcelle {
-  color: #1f2937 !important;
   font-size: 10px;
-  font-weight: 500;
-  text-shadow: 1px 1px 2px white;
+  z-index: 300 !important;
 }
 
-/* ===========================================================================
-   RESPONSIVE COMPLET
-   ========================================================================== */
-
-/* Tablette */
-@media (max-width: 992px) {
-  .search-container {
-    width: 350px;
-  }
-
-  .carte-content {
-    height: 550px;
-  }
+/* Parcelles */
+.label-parcelle {
+  color: black !important;
+  font-size: 0px;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  /* Reset complet pour le plein écran */
-  html,
-  body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Évite le scroll */
-  }
-
-  /* Conteneur principal */
-  .container {
-    height: 100%;
-    width: 100%;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Main container - prend tout l'espace */
-  .container .main-container {
-    height: 100%;
-    width: 100% !important;
-    margin-left: 0 !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Carte content - plein écran */
-  .carte-content {
-    height: 100vh !important; /* 100% de la hauteur de l'écran */
-    width: 100vw !important; /* 100% de la largeur de l'écran */
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    position: fixed; /* Fixe la carte */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  /* La carte Leaflet elle-même */
-  #map {
-    height: 100% !important;
-    width: 100% !important;
-    border-radius: 0 !important;
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-
-  .site-nav {
-    /* Seuelement pour la page carte */
-    display: block;
-    position: fixed;
-    top: 0;
-    padding: 15px 20px;
-    background: none;
-    border-bottom: none;
-    z-index: 9999;
-  }
-
-  .search-container {
-    width: 85%;
-    top: 13px;
-    margin-left: 30px;
-  }
-
-  .search-input {
-    height: 44px;
-    font-size: 14px;
-  }
-
-  .search-icon {
-    font-size: 22px;
-    left: 15px;
-  }
-
-  .search-results {
-    position: fixed; /* ← Passe en fixed sur mobile */
-    top: 125px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 85%;
-    max-width: 350px;
-    max-height: 40vh;
-    z-index: 10001;
-    overscroll-behavior: contain;
-  }
-
-  .search-item {
-    padding: 12px 15px;
-  }
-
-  .search-item-icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .search-item-icon .material-symbols-rounded {
-    font-size: 20px;
-  }
-
-  .search-item-title {
-    font-size: 0.95rem;
-  }
-
-  .label-section {
-    font-size: 12px;
-  }
-
-  .label-ilot {
-    font-size: 10px;
-  }
-
-  .label-parcelle {
-    font-size: 8px;
-  }
+/* Transition fluide */
+.label-section,
+.label-ilot,
+.label-parcelle {
+  transition: font-size 0.2s ease;
 }
 
-/* Petit mobile */
-@media (max-width: 480px) {
-  .carte-content {
-    height: 450px;
-    padding: 10px;
-  }
 
-  .search-container {
-    width: 82%;
-  }
-
-  .search-input {
-    height: 42px;
-    font-size: 13px;
-    padding: 0 45px;
-  }
-
-  .search-icon {
-    font-size: 20px;
-    left: 12px;
-  }
-
-  .search-clear {
-    width: 32px;
-    height: 32px;
-    right: 5px;
-  }
-
-  .search-results {
-    max-height: 250px;
-  }
-
-  .search-item {
-    padding: 10px 12px;
-    gap: 10px;
-  }
-
-  .search-item-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .search-item-title {
-    font-size: 0.85rem;
-  }
-
-  .search-item-subtitle {
-    font-size: 0.75rem;
-    gap: 6px;
-  }
-
-  .search-item-badge {
-    padding: 3px 8px;
-    font-size: 0.65rem;
-  }
-
-  .label-section {
-    font-size: 10px;
-  }
-
-  .label-ilot {
-    font-size: 8px;
-  }
-}
-
-/* ===========================================================================
-   MODAL PARCELLE - Styles
-   ========================================================================== */
 
 /* ===========================================================================
    MODAL LATÉRAL - Détails parcelle modifiable

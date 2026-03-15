@@ -19,9 +19,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/carte.css" />
     <link rel="stylesheet" href="css/composante.css" />
-    <link rel="stylesheet" href="css/test.css" />
-    
 
     <link
       rel="stylesheet"
@@ -36,7 +35,10 @@
       href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
     />
     <!-- Ajouter une bar de recherche de position -->
-
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"
+    />
   </head>
   <body>
     <nav class="site-nav">
@@ -529,8 +531,109 @@
     <!-- Délimitation de la carte ivoirienne -->
     <script src="https://unpkg.com/leaflet-boundary-canvas@1.0.0/dist/leaflet-boundary-canvas.min.js"></script>
 
-    
+    <script>
+      // initialisation de la carte
+      var map = L.map("map").setView([7.55, -5.55], 12);
 
-    <script src="js/test.js" type="module"></script>
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 22,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 2. CHARGER ET AFFICHER LA FRONTIÈRE DU PAYS
+      fetch("js/data/civ.geojson") // <-- Chemin vers votre nouveau fichier ADM0
+        .then((response) => response.json())
+        .then(function (countryBorder) {
+          // Créer une couche GeoJSON stylisée
+
+          map.createPane("maCarte");
+          map.getPane("maCarte").style.zIndex = 200;
+
+          var borderLayer = L.geoJSON(countryBorder, {
+            pane: "maCarte",
+            style: {
+              fillColor: "#3388ff", // Couleur de remplissage (bleu)
+              color: "#003366", // Couleur de la bordure (bleu foncé)
+              weight: 0.5, // Épaisseur du trait de bordure
+              opacity: 0.7, // Opacité du trait
+              fillOpacity: 0.15, // Légère transparence pour l'intérieur
+            },
+          }).addTo(map);
+
+          // 3. (Optionnel mais recommandé) Ajuster la vue pour bien cadrer le pays
+          map.fitBounds(borderLayer.getBounds(), {
+            padding: [10, 10], // Ajoute une marge de 30px autour
+            maxZoom: 14, // Empêche un zoom trop rapproché
+          });
+        })
+        .catch(function (error) {
+          console.error("Erreur de chargement de la frontière :", error);
+          // Vous pouvez afficher un message à l'utilisateur si besoin
+        });
+
+      //==============================================================================================
+      //==============================================================================================
+      //(========================== Configuration du contrôle de localisation ========================
+
+      // sauvegarder le position initial
+      var savedView = {
+        center: map.getCenter(), // Centre actuel
+        zoom: map.getZoom(), // Zoom actuel
+      };
+      console.log(savedView.zoom);
+
+      var locateControl = L.control
+        .locate({
+          position: "bottomright",
+          strings: {
+            title: "Me localiser",
+            popup: "Vous êtes à {distance} {unit} de ce point",
+            outsideMapBoundsMsg:
+              "Vous semblez être en dehors des limites de la carte",
+          },
+          locateOptions: {
+            maxZoom: 16,
+            watch: true,
+            enableHighAccuracy: true,
+          },
+          icon: "fas fa-location-crosshairs",
+          iconLoading: "fas fa-spinner fa-spin",
+          circleStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+            fillOpacity: 0.15,
+          },
+          markerStyle: {
+            color: "#007bff",
+            fillColor: "#007bff",
+          },
+
+          // Options pour le retour
+          keepCurrentZoomLevel: false,
+          returnToPrevBounds: true, // Revenir à la vue précédente
+          flyTo: true, // Animation fluide
+          cacheLocation: true,
+
+          // Comportement au clic
+          clickBehavior: {
+            inView: "stop", // Si déjà dans la vue : s'arrête
+            outOfView: "setView", // Si hors vue : centre
+            inViewNotFollowing: "setView",
+          },
+        })
+        .addTo(map);
+
+      //========================= Événement quand on arrête la localisation===================
+      map.on("stopfollowing", function () {
+        // Revenir à la vue sauvegardée
+        map.flyTo(savedView.center, savedView.zoom, {
+          duration: 1, // Durée de l'animation en secondes
+        });
+        console.log("Retour à la position initiale");
+      });
+    </script>
+
+    <script src="js/carte.js" type="module"></script>
   </body>
 </html>
